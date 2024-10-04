@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./styles/article.css">
+  <title>Create Article</title>
+</head>
+<body>
+  <header>
+    <button id="editButton">Edit</button>
+    <button id="previewButton">Preview</button>
+  </header>
+  <main>
+    <form action="/upload" method="post" enctype="multipart/form-data" id="articleForm">
+      <h1>Create Article</h1>
+      <input type="file" id="imageUpload" name="image" accept="image/*" required>
+      <input type="text" name="title" id="title" placeholder="Title" required>
+      <input type="text" name="introduction" id="introduction" placeholder="Introduction" required>
+      <textarea name="content" id="content" rows="40" placeholder="Content" required></textarea>
+
+      <button type="submit" id="sendButton">Enviar</button>      
+    </form>
+
+    <div id="preview"></div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const contentTextarea = document.getElementById('content');
+      const previewDiv = document.getElementById('preview');
+      const form = document.getElementById('articleForm');
+      const previewButton = document.getElementById('previewButton');
+      const editButton = document.getElementById('editButton');
+
+      editButton.style.backgroundColor = '#fff';
+      editButton.style.color = '#222';
+
+      document.getElementById('editButton').addEventListener('click', () => {
+        editButton.style.backgroundColor = '#fff';
+        editButton.style.color = '#222';
+        previewButton.style.backgroundColor = '#222';
+        previewButton.style.color = '#FFF';
+        
+        contentTextarea.disabled = false; 
+        previewDiv.style.display = 'none';
+        form.style.display = 'flex';
+      });
+      
+      document.getElementById('previewButton').addEventListener('click', () => {   
+        previewButton.style.backgroundColor = '#fff';
+        previewButton.style.color = '#222';
+        editButton.style.backgroundColor = '#222';
+        editButton.style.color = '#FFF';
+        
+        const markdown = contentTextarea.value;
+        const html = marked.parse(markdown);
+        
+        previewDiv.innerHTML = html; 
+        previewDiv.style.display = 'block';
+        form.style.display = 'none'; 
+      });
+    });
+  </script>
+</body>
+</html>
