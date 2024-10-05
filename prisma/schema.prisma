@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Definição das tabelas (models)
+model Articles {
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  introduction String    @db.VarChar(255)
+  content      String    @db.Text 
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  tags         Tags[]    @relation("ArticleTag") // Relacionamento N:N com Tags
+}
+
+model Tags {
+  id       Int     @id @default(autoincrement()) 
+  tagName  String  @db.VarChar(50) @unique
+  articles Articles[]  @relation("ArticleTag") // Relacionamento N:N com Blog
+}
+
+model Projects {
+  id             Int          @id @default(autoincrement())
+  title          String       @db.VarChar(255)
+  content        String       @db.Text
+  tools          String       
+  linkDeploy     String?
+  linkRepository String?
+  categories     Categories[]  @relation("ProjectCategory") // Relacionamento N:N com Categorias
+}
+
+model Categories {
+  id        Int        @id @default(autoincrement())
+  name      String     @db.VarChar(255)
+  projects  Projects[] @relation("ProjectCategory")
+}
