@@ -14,11 +14,18 @@ datasource db {
 }
 
 // Definição das tabelas (models)
+model User {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique @db.VarChar(25)
+  password    String   @db.VarChar(255)
+}
+
 model Articles {
   id           Int       @id @default(autoincrement())
   title        String    @db.VarChar(255)
   introduction String    @db.VarChar(255)
   content      String    @db.Text 
+  imageUrl     String?   @db.VarChar(255)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   tags         Tags[]    @relation("ArticleTag") // Relacionamento N:N com Tags
@@ -37,6 +44,7 @@ model Projects {
   tools          String       
   linkDeploy     String?
   linkRepository String?
+  imageUrl       String?       @db.VarChar(255)
   categories     Categories[]  @relation("ProjectCategory") // Relacionamento N:N com Categorias
 }
 
