@@ -22,13 +22,13 @@
     "sourceMap": true,
     "pretty": true,
     "typeRoots": [
-      "./src/types",
+      "src/@types",
       "./node_modules/@types"
     ]
   },
   "include": [
     "src/**/*",
-    "src/types/**/*.d.ts"
+    "src/@types/**/*.d.tss"
   ],
   "exclude": [
     "node_modules",
