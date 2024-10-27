@@ -11,25 +11,27 @@ export const passwordCompare = (password: string, hashedPassword: string) => {
 }
 
 export const validateStrongPassword = (password: string) => {
+  const errors: string[]= [];
 
   if(password.length < 8){
-    throw new Error('A senha deve conter no mínimo 8 caracteres');
+    errors.push('A senha deve conter no mínimo 8 caracteres');
   }
 
   if (!/[A-Z]/.test(password)) {
-    throw new Error('A senha deve conter pelo menos 1 letra maiúscula');
+    errors.push('A senha deve conter pelo menos 1 letra maiúscula');
   }
 
   if (!/[a-z]/.test(password)) {
-    throw new Error('A senha deve conter pelo menos 1 letra minúscula');
+    errors.push('A senha deve conter pelo menos 1 letra minúscula');
   }
 
   if (!/[0-9]/.test(password)) {
-    throw new Error('A senha deve conter pelo menos 1 número');
+    errors.push('A senha deve conter pelo menos 1 número');
   }
 
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    throw new Error('A senha deve conter pelo menos 1 caractere especial');
+    errors.push('A senha deve conter pelo menos 1 caractere especial');
   }
 
+  return errors;
 }
