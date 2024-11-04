@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 const prisma = new PrismaClient();
 
 
-const SECRET_KEY = process.env.JWT_SECRET || '';
+const SECRET_KEY = process.env.JWT_SECRET || 'defaultSecret';
 
 
 export const createUser = async (req: Request, res: Response) => {
@@ -36,6 +36,16 @@ export const createUser = async (req: Request, res: Response) => {
   }
 }
 
+export const allUsers = async (req: Request, res: Response) => {
+  try{
+    const users = await prisma.user.findMany();
+
+    res.status(200).json({ users });
+  }catch(error){
+    console.error('Erro ao buscar usuários:', error);
+    res.status(500).json({ error: 'Erro ao buscar usuários. Tente novamente mais tarde.' });
+  }
+}
 
 export const loginUser = async (req: Request, res: Response) => {
 
