@@ -1,4 +1,4 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import validateUser from '../middleware/user/validateUser';
 import { authToken } from '../middleware/user/authToken';
 import { createUser, deleteUser, loginUser, allUsers } from '../controller/userContorller';
