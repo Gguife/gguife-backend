@@ -37,7 +37,14 @@ export const createUser = async (req: Request, res: Response) => {
 
 export const allUsers = async (req: Request, res: Response) => {
   try{
-    const users = await prisma.users.findMany();
+    const users = await prisma.users.findMany({
+      select: {
+        id: true,
+        username: true,
+        articles: true,
+        projects: true
+      }
+    });
 
     res.status(200).json({ users });
   }catch(error){
@@ -53,15 +60,21 @@ export const oneUser = async (req: Request, res: Response) => {
     const user = await prisma.users.findUnique({
       where:{
         id: parseInt(id)
+      },
+      select: {
+        id: true,
+        username: true,
+        articles: true,
+        projects: true
       }
     })
     
-    if (!user) return res.status(404).json({ error: 'User not found.' });
+    if (!user) res.status(404).json({ error: 'User not found.' });
     
-    return res.status(200).json({user});
+    res.status(200).json({user});
   }catch(error){
     console.log("Error finding user:", error);
-    return res.status(500).json({error: 'Error finding user.'});
+    res.status(500).json({error: 'Error finding user.'});
   }
 }
 
@@ -70,7 +83,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
   try{
 
-    const token = jwt.sign({id, username}, SECRET_KEY, {expiresIn: '5h'} );
+    const token = jwt.sign({id, username}, SECRET_KEY, {expiresIn: '1d'} );
 
     res.status(200).json({message: 'Login bem-sucedido', token: token});
   }catch(error){
