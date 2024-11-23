@@ -1,14 +1,15 @@
 import { Router } from 'express';
 import validateUser from '../middleware/user/validateUser';
 import { authToken } from '../middleware/user/authToken';
-import { createUser, deleteUser, loginUser, allUsers } from '../controller/userContorller';
+import { createUser, deleteUser, loginUser, allUsers, oneUser } from '../controller/userContorller';
 const router = Router();
 
 
-router.post('/article/user/register', validateUser.credentialRegister, createUser); 
-router.post('/article/user/login', validateUser.credentialLogin, loginUser); 
-router.post('/article/user/:id', validateUser.credentialLogin, deleteUser); 
-router.get('/article/users', authToken, allUsers); 
+router.get('/users', authToken, allUsers); 
+router.get('/user/:id', authToken, oneUser); 
+router.post('/user/register', validateUser.credentialRegister, createUser); 
+router.post('/login', validateUser.credentialLogin, loginUser); 
+router.post('/user/:id', authToken, deleteUser); 
 
 
 export default router;
