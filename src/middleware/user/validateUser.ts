@@ -15,7 +15,7 @@ const credentialLogin = async (req: Request, res: Response, next: NextFunction) 
   }
 
   try{
-    const user = await prisma.user.findUnique({ where: { username } });
+    const user = await prisma.users.findUnique({ where: { username } });
     if(!user) {
       res.status(404).json({error: 'Credenciais inválidas!'})
       return;
@@ -47,7 +47,7 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
 
   try {
     
-    const usernameVerify = await prisma.user.findFirst({
+    const usernameVerify = await prisma.users.findFirst({
        where: { 
         username: {
           equals: username, 

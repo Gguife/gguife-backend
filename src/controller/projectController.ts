@@ -7,8 +7,15 @@ const prisma = new PrismaClient();
 export const createProject = async (req: Request, res: Response) => {
   const {title, content, tools, linkDeploy, linkRepository, category} = req.body;
   const imageUrl = req.file?.location;
+  const userId = req.user?.id;
 
   console.log(imageUrl);
+
+  if(!userId){
+    res.status(401).json({error: 'Usuário não autenticado.'})
+    return;
+  }
+
 
   try{
     
@@ -20,7 +27,8 @@ export const createProject = async (req: Request, res: Response) => {
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
         categories: category,
-        imageUrl: imageUrl
+        imageUrl: imageUrl,
+        userId: userId
       }
     });
 
@@ -77,6 +85,7 @@ export const getOneProject = async (req: Request, res: Response) => {
 export const updateProject = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {title, content, tools, linkDeploy, linkRepository, category} = req.body;
+  const userId = req.user?.id;
 
   try{
     const existProject = await prisma.projects.findUnique({
@@ -100,7 +109,8 @@ export const updateProject = async (req: Request, res: Response) => {
         tools: tools,
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
-        categories: category
+        categories: category,
+        userId: userId
       }});
 
     res.status(200).json({message: 'Projeto atualizado com sucesso.', project: updateProject})
