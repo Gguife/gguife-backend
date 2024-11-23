@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,10 +11,12 @@ datasource db {
 }
 
 // Definição das tabelas (models)
-model User {
-  id          Int      @id @default(autoincrement())
-  username    String   @unique @db.VarChar(25)
-  password    String   @db.VarChar(255)
+model Users {
+  id          Int       @id @default(autoincrement())
+  username    String    @unique @db.VarChar(25)
+  password    String    @db.VarChar(255)
+  articles    Articles[] // Relacionamento 1:N com Article
+  projects    Projects[] // Relacionamento 1:N com Project
 }
 
 model Articles {
@@ -28,13 +27,15 @@ model Articles {
   imageUrl     String?   @db.VarChar(255)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  tags         Tags[]    @relation("ArticleTag") // Relacionamento N:N com Tags
+  tags         Tags[]     @relation("ArticleTag") // Relacionamento N:N com Tags
+  userId       Int       // Relacionamento 1:N com User
+  user         Users      @relation(fields: [userId], references: [id])
 }
 
 model Tags {
-  id       Int     @id @default(autoincrement()) 
-  tagName  String  @db.VarChar(50) @unique
-  articles Articles[]  @relation("ArticleTag") // Relacionamento N:N com Blog
+  id       Int        @id @default(autoincrement()) 
+  tagName  String     @db.VarChar(50) @unique
+  articles Articles[]  @relation("ArticleTag") // Relacionamento N:N com Article
 }
 
 model Projects {
@@ -45,11 +46,7 @@ model Projects {
   linkDeploy     String?
   linkRepository String?
   imageUrl       String?       @db.VarChar(255)
-  categories     Categories[]  @relation("ProjectCategory") // Relacionamento N:N com Categorias
-}
-
-model Categories {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(255)
-  projects  Projects[] @relation("ProjectCategory")
+  categories     String        @db.VarChar(50)
+  userId         Int           // Relacionamento 1:N com User
+  user           Users          @relation(fields: [userId], references: [id])
 }
