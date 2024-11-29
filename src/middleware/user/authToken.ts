@@ -1,4 +1,4 @@
-import { User } from "@prisma/client";
+import { Users } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
@@ -13,7 +13,7 @@ export const authToken = (req: Request, res: Response, next: NextFunction) => {
   }
 
   try{ 
-    const verified = jwt.verify(token, SECRET_KEY) as User;
+    const verified = jwt.verify(token, SECRET_KEY) as Users;
 
     req.user = verified;
     next();
