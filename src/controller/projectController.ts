@@ -9,14 +9,11 @@ export const createProject = async (req: Request, res: Response) => {
   const imageUrl = req.file?.location;
   const userId = req.user?.id;
 
-  console.log(imageUrl);
-
   if(!userId){
     res.status(401).json({error: 'Usuário não autenticado.'})
     return;
   }
-
-
+  
   try{
     
     const project = await prisma.projects.create({
@@ -35,12 +32,12 @@ export const createProject = async (req: Request, res: Response) => {
 
     res.status(200).json({message: 'Projeto cadastrado com sucesso!', project});
   }catch(error){
-    console.error('Error ao cadastrar o projeto', error);
+    console.log('Error ao cadastrar o projeto', error);
     res.status(500).json({error: 'Problemas com o servidor. Tente novamente mais tarde!'});
   }
 }
 
-// get all
+
 export const getProjects = async (req: Request, res: Response) => {  
   try{
     const projects = await prisma.projects.findMany();
@@ -57,7 +54,6 @@ export const getProjects = async (req: Request, res: Response) => {
   }
 }
 
-// get one
 export const getOneProject = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -81,7 +77,6 @@ export const getOneProject = async (req: Request, res: Response) => {
   }
 }
 
-// editar
 export const updateProject = async (req: Request, res: Response) => {
   const {id} = req.params;
   const {title, content, tools, linkDeploy, linkRepository, category} = req.body;
@@ -120,7 +115,6 @@ export const updateProject = async (req: Request, res: Response) => {
   }
 }
 
-// excluir
 export const deleteProject = async (req: Request, res: Response) => {
   const { id } = req.params;
   
