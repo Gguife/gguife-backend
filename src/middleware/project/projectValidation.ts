@@ -20,11 +20,6 @@ const projectValidate = async (req: Request, res: Response, next: NextFunction) 
     }
   }
 
-  if(!req.file){
-    res.status(400).json({message: 'A imagem é dobrigatória!'});
-    return;
-  }
-
   next();
 }
 
