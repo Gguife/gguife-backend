@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsnd --respawn src/index.ts",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "vercel-build": "npx prisma migrate deploy"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.699.0",
