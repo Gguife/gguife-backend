@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsnd --respawn src/index.ts",
-    "build": "tsc",
+    "build": "tsc && npx prisma generate", 
     "test": "jest",
     "vercel-build": "npx prisma migrate deploy"
   },
