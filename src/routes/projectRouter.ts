@@ -9,7 +9,7 @@ const router = Router();
 router.get('/projects', getProjects);
 router.get('/project/:id', getOneProject);
 router.post('/project', authToken, upload, projectValidate, createProject);
-router.put('/project/:id', updateProject);
-router.delete('/project/:id', deleteProject);
+router.put('/project/:id', authToken, projectValidate, updateProject);
+router.delete('/project/:id', authToken, deleteProject);
 
 export default router;
