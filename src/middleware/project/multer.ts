@@ -4,7 +4,7 @@ import multerS3 from "multer-s3";
 
 const storage = multerS3({
   s3,
-  bucket: 'gguife-portfolio-images',
+  bucket: process.env.S3_BUCKET_NAME || 'default-bucket',
   ACL: 'public-read',
   contentType: multerS3.AUTO_CONTENT_TYPE,
   key: (req: Express.Request, file: Express.Multer.File, cb: (error: Error | null, key?: string) => void) => {
