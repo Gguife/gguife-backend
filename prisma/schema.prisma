@@ -27,7 +27,8 @@ model Articles {
   imageUrl     String?   @db.VarChar(255)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  tags         Tags[]     @relation("ArticleTag") // Relacionamento N:N com Tags
+  tagId        Int       // Chave estrangeira para Tags
+  tag          Tags      @relation(fields: [tagId], references: [id])
   userId       Int       // Relacionamento 1:N com User
   user         Users      @relation(fields: [userId], references: [id])
 }
@@ -35,7 +36,7 @@ model Articles {
 model Tags {
   id       Int        @id @default(autoincrement()) 
   tagName  String     @db.VarChar(50) @unique
-  articles Articles[]  @relation("ArticleTag") // Relacionamento N:N com Article
+  articles Articles[] 
 }
 
 model Projects {
@@ -45,8 +46,15 @@ model Projects {
   tools          String       
   linkDeploy     String?
   linkRepository String?
-  imageUrl       String?       @db.VarChar(255)
-  categories     String        @db.VarChar(50)
-  userId         Int           // Relacionamento 1:N com User
-  user           Users          @relation(fields: [userId], references: [id])
+  imageUrl       String?      @db.VarChar(255)
+  categoryId     Int           
+  category       Categories   @relation(fields: [categoryId], references: [id])  
+  userId         Int          // Relacionamento 1:N com User
+  user           Users        @relation(fields: [userId], references: [id])
+}
+
+model Categories {
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(25)
+  projects      Projects[]
 }
