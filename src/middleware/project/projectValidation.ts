@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 
-const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
+const isFieldEmpty = (field: any) => !field || String(field).trim().length === 0;
 
 const projectValidate = async (req: Request, res: Response, next: NextFunction) => {
-  const {title, content, tools, linkRepository, categories } = req.body;
+  const {title, content, tools, linkRepository, categoryId } = req.body;
     
   const requiredFields = [
     {field: 'título', value: title},
     {field: 'conteúdo', value: content},
     {field: 'ferramentas', value: tools},
     {field: 'link repository', value: linkRepository},
-    {field: 'categoria', value: categories}
+    {field: 'categoria', value: categoryId}
   ];
 
   for(const {field, value} of requiredFields){
@@ -18,6 +18,11 @@ const projectValidate = async (req: Request, res: Response, next: NextFunction) 
       res.status(400).json({message: `O campo ${field} é obrigatório!`})
       return;
     }
+  }
+
+  if (isNaN(Number(categoryId))) {
+    res.status(400).json({message: 'O campo categoria deve ser um número válido.'});
+    return;
   }
 
   next();

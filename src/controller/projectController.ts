@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
 
-
 const prisma = new PrismaClient();
 
 export const createProject = async (req: Request, res: Response) => {
-  const {title, content, tools, linkDeploy, linkRepository, categories} = req.body;
+  const {title, content, tools, linkDeploy, linkRepository, categoryId} = req.body;
   const imageUrl = req.file?.location;
   const userId = req.user?.id;
 
@@ -15,7 +14,21 @@ export const createProject = async (req: Request, res: Response) => {
   }
   
   try{
-    
+
+    const categoryIdInt = parseInt(req.body.categoryId, 10); // Converte a string de volta para um número
+
+
+    const category = await prisma.categories.findUnique({
+      where: {
+        id: categoryIdInt,
+      }
+    })
+
+    if(!category) {
+      res.status(400).json({error: "Categoria não encontrada."});
+      return;
+    }
+
     const project = await prisma.projects.create({
       data: {
         title: title,
@@ -23,7 +36,7 @@ export const createProject = async (req: Request, res: Response) => {
         tools: tools,
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
-        categories: categories,
+        categoryId: category.id,
         imageUrl: imageUrl,
         userId: userId
       }
@@ -36,7 +49,6 @@ export const createProject = async (req: Request, res: Response) => {
     res.status(500).json({error: 'Problemas com o servidor. Tente novamente mais tarde!'});
   }
 }
-
 
 export const getProjects = async (req: Request, res: Response) => {  
   try{
@@ -79,7 +91,7 @@ export const getOneProject = async (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
   const {id} = req.params;
-  const {title, content, tools, linkDeploy, linkRepository, categories} = req.body;
+  const {title, content, tools, linkDeploy, linkRepository} = req.body;
   const userId = req.user?.id;
 
   try{
@@ -104,7 +116,6 @@ export const updateProject = async (req: Request, res: Response) => {
         tools: tools,
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
-        categories: categories,
         userId: userId
       }});
 
@@ -129,5 +140,37 @@ export const deleteProject = async (req: Request, res: Response) => {
   }catch(error){
     console.error('Error ao excluir projeto: ' + error);
     res.status(500).json({error: 'Erro ao excluir projeto. Tente novamente mais tarde!'})
+  }
+}
+
+
+export const createCategory = async (req: Request, res: Response) => {
+  const {name} = req.body;
+
+  try{
+
+    const category = await prisma.categories.create({
+      data: {
+        name: name,
+      }
+    });
+
+
+    res.status(200).json({message: "Categoria criada com sucesso", category});
+  }catch(error) {
+    console.error('Erro ao criar categoria', error);
+    res.status(500).json({ error: 'Erro ao criar categoria. Tente novamente mais tarde.' });
+  }
+}
+
+
+export const getCategory = async (req: Request, res: Response) => {
+  try{
+    const categories = await prisma.categories.findMany();
+
+    res.status(200).json({categories});
+  }catch(error){
+    console.error('Erro ao encontrar categorias', error);
+    res.status(500).json({ error: 'Erro ao encontrar categorias. Tente novamente mais tarde.' });
   }
 }
