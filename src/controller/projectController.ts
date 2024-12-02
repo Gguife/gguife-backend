@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const createProject = async (req: Request, res: Response) => {
-  const {title, content, tools, linkDeploy, linkRepository, category} = req.body;
+  const {title, content, tools, linkDeploy, linkRepository, categories} = req.body;
   const imageUrl = req.file?.location;
   const userId = req.user?.id;
 
@@ -23,7 +23,7 @@ export const createProject = async (req: Request, res: Response) => {
         tools: tools,
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
-        categories: category,
+        categories: categories,
         imageUrl: imageUrl,
         userId: userId
       }
@@ -79,7 +79,7 @@ export const getOneProject = async (req: Request, res: Response) => {
 
 export const updateProject = async (req: Request, res: Response) => {
   const {id} = req.params;
-  const {title, content, tools, linkDeploy, linkRepository, category} = req.body;
+  const {title, content, tools, linkDeploy, linkRepository, categories} = req.body;
   const userId = req.user?.id;
 
   try{
@@ -104,7 +104,7 @@ export const updateProject = async (req: Request, res: Response) => {
         tools: tools,
         linkDeploy: linkDeploy,
         linkRepository: linkRepository,
-        categories: category,
+        categories: categories,
         userId: userId
       }});
 
