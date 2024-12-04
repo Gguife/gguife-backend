@@ -51,15 +51,35 @@ export const createProject = async (req: Request, res: Response) => {
 }
 
 export const getProjects = async (req: Request, res: Response) => {  
+  const {search = '', take = 10, skip = 0} = req.query;
+  
   try{
-    const projects = await prisma.projects.findMany();
-    
+    const projects = await prisma.projects.findMany({
+      where: {
+        title: {
+          contains: String(search),
+          mode: 'insensitive'
+        },
+      },
+      take: Number(take),
+      skip: Number(skip)
+    })
+
+    const totalProjects = await prisma.projects.count({
+      where: {
+        title: {
+          contains: String(search),
+          mode: 'insensitive'
+        },
+      },
+    })
+
     if(projects.length === 0){
       res.status(204).json({message: 'Não existem projetos criados.'});
       return;
     }
 
-    res.status(200).json({projects});
+    res.status(200).json({projects: projects, total: totalProjects});
   }catch(error){ 
     console.error('Error ao buscar todos os projetos: ' + error);
     res.status(500).json({error: 'Erro ao buscar projetos. Tente novamente mais tarde!'})
@@ -106,6 +126,11 @@ export const updateProject = async (req: Request, res: Response) => {
       return;
     }
 
+    if(existProject.userId !== userId) {
+      res.status(403).json({ message: 'Você não tem permissão para atualizar este projeto.' });
+      return;
+    }
+
     const updateProject = await prisma.projects.update({
       where:{
         id: parseInt(id)
@@ -140,37 +165,5 @@ export const deleteProject = async (req: Request, res: Response) => {
   }catch(error){
     console.error('Error ao excluir projeto: ' + error);
     res.status(500).json({error: 'Erro ao excluir projeto. Tente novamente mais tarde!'})
-  }
-}
-
-
-export const createCategory = async (req: Request, res: Response) => {
-  const {name} = req.body;
-
-  try{
-
-    const category = await prisma.categories.create({
-      data: {
-        name: name,
-      }
-    });
-
-
-    res.status(200).json({message: "Categoria criada com sucesso", category});
-  }catch(error) {
-    console.error('Erro ao criar categoria', error);
-    res.status(500).json({ error: 'Erro ao criar categoria. Tente novamente mais tarde.' });
-  }
-}
-
-
-export const getCategory = async (req: Request, res: Response) => {
-  try{
-    const categories = await prisma.categories.findMany();
-
-    res.status(200).json({categories});
-  }catch(error){
-    console.error('Erro ao encontrar categorias', error);
-    res.status(500).json({ error: 'Erro ao encontrar categorias. Tente novamente mais tarde.' });
   }
 }
