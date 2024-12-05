@@ -15,7 +15,7 @@ export const createProject = async (req: Request, res: Response) => {
   
   try{
 
-    const categoryIdInt = parseInt(req.body.categoryId, 10); // Converte a string de volta para um número
+    const categoryIdInt = parseInt(req.body.categoryId, 10);
 
 
     const category = await prisma.categories.findUnique({
@@ -103,6 +103,34 @@ export const getOneProject = async (req: Request, res: Response) => {
 
     
     res.status(200).json({project});
+  }catch(error){
+    console.error('Error ao buscar o projeto: ' + error);
+    res.status(500).json({error: 'Erro ao buscar o projeto. Tente novamente mais tarde!'})
+  }
+}
+
+export const getUserProject = async (req: Request, res: Response) => {
+  const { username } = req.query;
+  
+  try{
+    const user = await prisma.users.findUnique({
+      where: {
+        username: String(username)
+      }
+    });
+
+    
+    const projects = await prisma.projects.findMany({
+      where: {
+        userId: user?.id
+      }
+    })
+
+    if(!projects) {
+      res.status(404).json({message: 'Projetos não encontrados!'})
+    }
+
+    res.status(200).json({projects})
   }catch(error){
     console.error('Error ao buscar o projeto: ' + error);
     res.status(500).json({error: 'Erro ao buscar o projeto. Tente novamente mais tarde!'})
