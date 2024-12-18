@@ -1,17 +1,37 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../config/client";
 
-const prisma = new PrismaClient();
+// Função para validação de ID 
+const validateId = (id: any, res: Response): boolean => { 
+  const parsedId = Number(id); if(isNaN(parsedId) || parsedId <= 0) { 
+    res.status(400).json({error: 'Id inválido.'}); 
+    return false;
+  } 
+  return true; 
+} 
+
+// Função para tratamento de erros 
+const handleError = (error: any, res: Response, customMessage: string) => { 
+  console.error(customMessage, error); 
+  res.status(500).json({error: customMessage}); 
+} 
+
+// Função para verificar se o usuário não está autenticado 
+const checkUserAuth = (userId: any, res: Response): boolean => { 
+  if(!userId) { 
+    res.status(401).json({error: 'Usuário não autenticado.'}); 
+    return false; 
+  } 
+  return true; 
+}
+
 
 export const createProject = async (req: Request, res: Response) => {
   const {title, content, tools, linkDeploy, linkRepository} = req.body;
   const imageUrl = req.file?.location;
   const userId = req.user?.id;
-
-  if(!userId){
-    res.status(401).json({error: 'Usuário não autenticado.'})
-    return;
-  }
+  
+  if(!checkUserAuth(userId, res)) return;
 
   const categoryIdInt = parseInt(req.body.categoryId, 10);
   if(isNaN(categoryIdInt)){
@@ -26,7 +46,7 @@ export const createProject = async (req: Request, res: Response) => {
     linkRepository: linkRepository,
     categoryId: categoryIdInt,
     imageUrl: imageUrl,
-    userId: userId
+    userId: userId as number
   }
 
   try{
@@ -36,14 +56,12 @@ export const createProject = async (req: Request, res: Response) => {
 
     res.status(200).json({message: 'Projeto cadastrado com sucesso!', project});
   }catch(error: any){
-    console.log('Error ao cadastrar o projeto', error);
-
     if(error.code === 'P2003') { // Erro do prisma para violação de chave estrangeria
       res.status(400).json({error: "Categoria não encontrada."})
       return;
     }
 
-    res.status(500).json({error: 'Problemas com o servidor. Tente novamente mais tarde!'});
+    handleError(error, res, 'Error ao cadastrar o projeto.');
   }
 }
 
@@ -77,18 +95,14 @@ export const getProjects = async (req: Request, res: Response) => {
 
     res.status(200).json({projects, totalProjects});
   }catch(error: any){ 
-    console.error('Error ao buscar todos os projetos: ' + error.message);
-    res.status(500).json({error: 'Erro ao buscar projetos. Tente novamente mais tarde!'})
+    handleError(error, res, 'Error ao buscar todos os projetos.');
   }
 }
 
 export const getOneProject = async (req: Request, res: Response) => {
   const projectId = Number(req.params.id);
 
-  if(isNaN(projectId) || projectId <= 0) {
-    res.status(400).json({error: 'Id do projeto inválido.'});
-    return;
-  }
+  if(!validateId(projectId, res)) return;
 
   try{
     const project = await prisma.projects.findUnique({
@@ -105,8 +119,7 @@ export const getOneProject = async (req: Request, res: Response) => {
 
     res.status(200).json({project});
   }catch(error: any){
-    console.error('Error ao buscar o projeto: ' + error.message);
-    res.status(500).json({error: 'Erro ao buscar o projeto. Tente novamente mais tarde!'})
+    handleError(error, res, 'Erro ao buscar o projeto.');
   }
 }
 
@@ -154,10 +167,9 @@ export const updateProject = async (req: Request, res: Response) => {
   const {title, content, tools, linkDeploy, linkRepository} = req.body;
   const userId = req.user?.id;
 
-  if(!userId) {
-    res.status(401).json({message: 'Usuário não autenticado'});
-    return;
-  }
+  if(!checkUserAuth(userId, res)) return;
+
+  if(!validateId(userId, res)) return;
  
   try{
     const existProject = await prisma.projects.findUnique({
@@ -191,18 +203,14 @@ export const updateProject = async (req: Request, res: Response) => {
 
     res.status(200).json({message: 'Projeto atualizado com sucesso.', project: updateProject})
   }catch(error: any){
-    console.error('Error ao atualizar projeto: ' + error.message);
-    res.status(500).json({error: 'Erro ao atualizar projeto. Tente novamente mais tarde!'});
+    handleError(error, res, 'Erro ao atualizar o projeto.');
   }
 }
 
 export const deleteProject = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
-  
-  if(isNaN(id)) {
-    res.status(400).json({error: 'Id inválido. Deve ser um número.'});
-    return;
-  }
+
+  if(!validateId(id, res)) return;
 
   try{
     await prisma.projects.delete({
@@ -213,7 +221,6 @@ export const deleteProject = async (req: Request, res: Response) => {
     
     res.status(200).json({message: 'Projeto removido com sucesso!'});
   }catch(error: any){
-    console.error('Error ao excluir projeto: ' + error.message);
-    res.status(500).json({error: 'Erro ao excluir projeto. Tente novamente mais tarde!'})
+    handleError(error, res, 'Erro ao excluir projeto');
   }
 }

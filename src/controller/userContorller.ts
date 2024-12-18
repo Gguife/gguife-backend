@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
 import { hashPassword, validateStrongPassword } from "../service/user/passwordService";
 import jwt from "jsonwebtoken";
-
-const prisma = new PrismaClient();
-
+import prisma from "../config/client";
 
 const SECRET_KEY = process.env.JWT_SECRET || 'defaultSecret';
 

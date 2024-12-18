@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { passwordCompare } from "../../service/user/passwordService";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "../../config/client";
 
 const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
 
@@ -69,4 +67,4 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export default {credentialLogin, credentialRegister}
+export default {credentialLogin, credentialRegister, isFieldEmpty};
