@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { hashPassword, validateStrongPassword } from "../service/user/passwordService";
+import { hashPassword } from "../service/user/passwordService";
 import jwt from "jsonwebtoken";
 import prisma from "../config/client";
 
@@ -10,12 +10,6 @@ export const createUser = async (req: Request, res: Response) => {
   const {username, password} = req.body;
 
   try{
-    const validationErrosPassword = await validateStrongPassword(password)
-    if(validationErrosPassword.length > 0){
-      res.status(400).json({error: validationErrosPassword});
-      return;
-    }
-
     const hashpassword = await hashPassword(password);
 
     const user = await prisma.users.create({
