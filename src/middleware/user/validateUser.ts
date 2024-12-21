@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { passwordCompare } from "../../service/user/passwordService";
+import { passwordCompare, validateStrongPassword } from "../../service/user/passwordService";
 import prisma from "../../config/client";
 
 const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
@@ -43,8 +43,7 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
     return;
   }
 
-  try {
-    
+  try {    
     const usernameVerify = await prisma.users.findFirst({
        where: { 
         username: {
@@ -57,6 +56,12 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
 
     if (usernameVerify) {
       res.status(400).json({ message: 'Este nome de usuário já existe!' });
+      return;
+    }
+
+    const validationErrosPassword = await validateStrongPassword(password)
+    if(validationErrosPassword.length > 0){
+      res.status(400).json({error: validationErrosPassword});
       return;
     }
 
