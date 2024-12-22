@@ -3,14 +3,14 @@ import validateUser from '../../src/middleware/user/validateUser';
 import { prismaMock, userMock } from '../mock/prisma';
 import * as passwordService from '../../src/service/user/passwordService';
 
-const createMockReqRes = () => {
+const createMockReqResNext = () => {
   return {
     req: {body: {}, params: {}} as unknown as Request,
     res: {
       status: jest.fn().mockReturnThis(),
       json: jest.fn()
     } as unknown as Response,
-    next: jest.fn()
+    next: jest.fn() as NextFunction
   };
 }
 
@@ -18,10 +18,11 @@ const createMockReqRes = () => {
 describe("User validate fields test", () => {
   let req: Request;
   let res: Response;
-  let next: jest.Mock;
+  let next: NextFunction;
 
   beforeEach(() => {
-    ({req, res, next} = createMockReqRes());
+    ({req, res, next} = createMockReqResNext());
+    jest.clearAllMocks();
   });
   
   describe('isFieldEmpty', () => {
@@ -72,7 +73,7 @@ describe("User validate fields test", () => {
 
       expect(res.status).toHaveBeenCalledWith(500);
       expect(res.json).toHaveBeenCalledWith({error: 'Error na autenticação. Tente novamente mais tarde!'});
-      expect(next).not.toHaveBeenCalled;
+      expect(next).not.toHaveBeenCalled();
     });
     
     test('should return 401 if the password is invalid', async () => {
@@ -84,7 +85,7 @@ describe("User validate fields test", () => {
       prismaMock.users.findUnique.mockResolvedValue(userMock);
       
       //Mock da funcao passwordCompare
-      jest.spyOn(require('../../src/service/user/passwordService'), 'passwordCompare').mockResolvedValue(false);
+      jest.spyOn(passwordService, 'passwordCompare').mockResolvedValue(false);
 
       await validateUser.credentialLogin(req, res, next); 
 
@@ -165,6 +166,5 @@ describe("User validate fields test", () => {
       expect(next).toHaveBeenCalled();
       expect(res.status).not.toHaveBeenCalled();
     });
-
   })
 })
