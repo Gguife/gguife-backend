@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import { hashPassword } from "../service/user/passwordService";
-import jwt from "jsonwebtoken";
 import prisma from "../config/client";
-
-const SECRET_KEY = process.env.JWT_SECRET || 'defaultSecret';
-
+import { generateToken } from "middleware/user/authToken";
 
 export const createUser = async (req: Request, res: Response) => {
   const {username, password} = req.body;
@@ -74,7 +71,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
   try{
 
-    const token = jwt.sign({id, username}, SECRET_KEY, {expiresIn: '1d'} );
+    const token = generateToken(id, username);
 
     res.status(200).json({message: 'Login bem-sucedido', token: token});
   }catch(error){
