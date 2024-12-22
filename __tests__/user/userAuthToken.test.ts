@@ -28,29 +28,46 @@ describe('Authenticate jwt', () => {
   let req: Request;
   let res: Response;
   let next: NextFunction;
+  const mockToken = 'jwt-mock-token';
+
 
   beforeEach(() => {
     ({req, res, next} = createMockReqResNext());
     jest.clearAllMocks();
   })
 
-  test('should return error 401 for no authorization header', async () => {
+  test('should return error 401 when no token is provided', async () => {
     req.headers = {authorization: 'invalid'};
     (req.header as jest.Mock).mockReturnValue(undefined);
 
     await authToken(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.send).toHaveBeenCalledWith('Acesso negado!');
+    expect(res.json).toHaveBeenCalledWith({error: 'Token de autenticação ausente!'});
     expect(next).not.toHaveBeenCalled();
   });
 
-  test('should verify and return the decoded payload of the JWT token', async () => {
+  test('should return error 403 for an invalid or expired token', async () => {
+    req.headers = {authorization: 'invalid'};
+    (req.header as jest.Mock).mockReturnValue(mockToken);
+
+    (jwt.verify as jest.Mock).mockImplementation(() => {
+      throw new Error('Token ínvalido ou expirado!');
+    })
+
+    await authToken(req, res, next);
+
+    expect(jwt.verify).toHaveBeenCalledWith(mockToken, SECRET_KEY);
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith({error: 'Token ínvalido ou expirado!'});
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  test('shoudl call next() when a valid token is provided', async () => {
     const mockPayload = {
       id: 1,
       username: 'linux'
     };
-    const mockToken = 'jwt-mock-token';
     
     req.headers = {authorization: `Bearer ${mockToken}`};
     (req.header as jest.Mock).mockReturnValue(`Bearer ${mockToken}`); 
