@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { hashPassword } from "../service/user/passwordService";
 import prisma from "../config/client";
-import { generateToken } from "middleware/user/authToken";
+import { generateToken } from "../middleware/user/authToken";
 
 export const createUser = async (req: Request, res: Response) => {
   const {username, password} = req.body;
@@ -14,7 +14,7 @@ export const createUser = async (req: Request, res: Response) => {
         username: username,
         password: hashpassword
       }
-    }) 
+    })
 
     res.status(200).json({message: 'usuário criado com sucesso!', user})
   }catch(error){
@@ -70,7 +70,6 @@ export const loginUser = async (req: Request, res: Response) => {
   const {id, username} = req.user!;
 
   try{
-
     const token = generateToken(id, username);
 
     res.status(200).json({message: 'Login bem-sucedido', token: token});
@@ -85,7 +84,11 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;  
 
   try {
-    await prisma.users.delete({where: {id: parseInt(id)}});
+    await prisma.users.delete({
+      where: {
+        id: parseInt(id)
+      }
+    });
 
     res.status(200).json({message: 'Usuário deletado com sucesso!'})
   }catch(error) {
