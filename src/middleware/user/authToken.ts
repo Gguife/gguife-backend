@@ -8,7 +8,7 @@ export const authToken = (req: Request, res: Response, next: NextFunction) => {
 
   const token = req.header('Authorization')?.replace('Bearer', '').trim();
   if(!token) {
-    res.status(401).send('Acesso negado!');
+    res.status(401).json({error: 'Token de autenticação ausente!'});
     return;
   }
 
@@ -18,6 +18,10 @@ export const authToken = (req: Request, res: Response, next: NextFunction) => {
     req.user = verified;
     next();
   }catch(error){
-    res.status(403).send('Token inválido ou expirado!');
+    res.status(403).json({error: 'Token ínvalido ou expirado!'});
   }
+}
+
+export const generateToken = (id: number, username: string) => { 
+  return jwt.sign({id, username}, SECRET_KEY, {expiresIn: '1d'} );
 }

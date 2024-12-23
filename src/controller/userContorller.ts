@@ -1,24 +1,12 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "@prisma/client";
-import { hashPassword, validateStrongPassword } from "../service/user/passwordService";
-import jwt from "jsonwebtoken";
-
-const prisma = new PrismaClient();
-
-
-const SECRET_KEY = process.env.JWT_SECRET || 'defaultSecret';
-
+import { hashPassword } from "../service/user/passwordService";
+import prisma from "../config/client";
+import { generateToken } from "../middleware/user/authToken";
 
 export const createUser = async (req: Request, res: Response) => {
   const {username, password} = req.body;
 
   try{
-    const validationErrosPassword = await validateStrongPassword(password)
-    if(validationErrosPassword.length > 0){
-      res.status(400).json({error: validationErrosPassword});
-      return;
-    }
-
     const hashpassword = await hashPassword(password);
 
     const user = await prisma.users.create({
@@ -26,7 +14,7 @@ export const createUser = async (req: Request, res: Response) => {
         username: username,
         password: hashpassword
       }
-    }) 
+    })
 
     res.status(200).json({message: 'usuário criado com sucesso!', user})
   }catch(error){
@@ -82,8 +70,7 @@ export const loginUser = async (req: Request, res: Response) => {
   const {id, username} = req.user!;
 
   try{
-
-    const token = jwt.sign({id, username}, SECRET_KEY, {expiresIn: '1d'} );
+    const token = generateToken(id, username);
 
     res.status(200).json({message: 'Login bem-sucedido', token: token});
   }catch(error){
@@ -97,7 +84,11 @@ export const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;  
 
   try {
-    await prisma.users.delete({where: {id: parseInt(id)}});
+    await prisma.users.delete({
+      where: {
+        id: parseInt(id)
+      }
+    });
 
     res.status(200).json({message: 'Usuário deletado com sucesso!'})
   }catch(error) {

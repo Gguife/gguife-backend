@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { passwordCompare } from "../../service/user/passwordService";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { passwordCompare, validateStrongPassword } from "../../service/user/passwordService";
+import prisma from "../../config/client";
 
 const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
 
@@ -45,8 +43,7 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
     return;
   }
 
-  try {
-    
+  try {    
     const usernameVerify = await prisma.users.findFirst({
        where: { 
         username: {
@@ -62,6 +59,12 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
       return;
     }
 
+    const validationErrosPassword = await validateStrongPassword(password)
+    if(validationErrosPassword.length > 0){
+      res.status(400).json({error: validationErrosPassword});
+      return;
+    }
+
     next();
   }catch(error){
     console.error('Erro ao validar registro de usuário:', error);
@@ -69,4 +72,4 @@ const credentialRegister = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-export default {credentialLogin, credentialRegister}
+export default {credentialLogin, credentialRegister, isFieldEmpty};

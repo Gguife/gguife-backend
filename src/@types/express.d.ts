@@ -1,5 +1,4 @@
 import {Users} from "@prisma/client";
-import multer from "multer";
 
 declare global {
   namespace Express {
