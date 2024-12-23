@@ -9,7 +9,7 @@ router.get('/users', authToken, allUsers);
 router.get('/user/:id', authToken, oneUser); 
 router.post('/user/register', validateUser.credentialRegister, createUser); 
 router.post('/login', validateUser.credentialLogin, loginUser); 
-router.post('/user/:id', authToken, deleteUser); 
+router.delete('/user/:id', authToken, deleteUser); 
 
 
 export default router;
