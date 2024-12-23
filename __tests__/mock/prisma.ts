@@ -18,3 +18,32 @@ export const userMock = {
   username: 'linux',
   password: '$2b$10$encryptedPasswordHere'
 } as Users;
+
+export const usersMock = [
+  {
+    id: 1,
+    username: 'linux',
+    password: '$2b$10$encryptedPasswordHere',
+    title: 'Testando mock',
+    introduction: 'Testando mock',
+    content: 'Testando mock',
+    imageUrl: 'Testando mock',
+    createdAt: new Date('2023-01-01T10:00:00Z'),
+    updatedAt: new Date('2023-01-02T12:00:00Z'),
+    tagId: 1,
+    userId: 1,
+  },
+  {
+    id: 2,
+    username: 'Daniel',
+    password: '$2b$10$encryptedPasswordHere',
+    title: 'Testando mock',
+    introduction: 'Testando mock',
+    content: 'Testando mock',
+    imageUrl: 'Testando mock',
+    createdAt: new Date('2023-01-01T10:00:00Z'),
+    updatedAt: new Date('2023-01-02T12:00:00Z'),
+    tagId: 2,
+    userId: 2,
+  },
+]
