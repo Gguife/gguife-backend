@@ -20,6 +20,14 @@ const articleValidate  = async (req: Request, res: Response, next: NextFunction)
     }
   }
 
+  if(introduction.length > 50) {
+    res.status(400).json({message: 'A introdução deve ter no máximo 50 caracteres!'})
+  }
+
+  if(content.length < 10 || content.length > 1000) {
+    res.status(400).json({message: 'O conteúdo deve ter entre 10 a 1000 caracteres!'});
+  }
+
   if(isNaN(Number(tagId))){
     res.status(400).json({message: 'O campo das tags deve ser um número válido.'})
     return;
