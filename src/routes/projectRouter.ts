@@ -3,7 +3,7 @@ import { authToken } from '../middleware/user/authToken';
 import { createProject, getProjects, getOneProject, updateProject, deleteProject, getUserProject } from '../controller/projectController';
 import { createCategory, getCategory } from '../controller/categoryController';
 import projectValidate from '../middleware/project/projectValidation';
-import upload from '../middleware/project/multer';
+import upload from '../utils/multer';
 
 const router = Router();
 

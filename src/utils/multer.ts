@@ -1,4 +1,4 @@
-import s3 from "../../config/aws";
+import s3 from "../config/aws";
 import multer from "multer";
 import multerS3 from "multer-s3";
 
