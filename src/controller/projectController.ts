@@ -3,10 +3,11 @@ import prisma from "../config/client";
 
 // Função para validação de ID 
 const validateId = (id: any, res: Response): boolean => { 
-  const parsedId = Number(id); if(isNaN(parsedId) || parsedId <= 0) { 
+  if(isNaN(id) || id <= 0) { 
     res.status(400).json({error: 'Id inválido.'}); 
     return false;
   } 
+  
   return true; 
 } 
 
@@ -56,78 +57,24 @@ export const createProject = async (req: Request, res: Response) => {
 
     res.status(200).json({message: 'Projeto cadastrado com sucesso!', project});
   }catch(error: any){
-    if(error.code === 'P2003') { // Erro do prisma para violação de chave estrangeria
+    if(error.code === 'P2003') {
       res.status(400).json({error: "Categoria não encontrada."})
       return;
     }
-
+    
     handleError(error, res, 'Error ao cadastrar o projeto.');
   }
 }
 
-export const getProjects = async (req: Request, res: Response) => {  
-  const search = String(req.body.search || '').trim();
-  const take = Math.min(Number(req.body.take) || 12, 100);
-  const skip = Math.max(Number(req.body.skip) || 0, 0);
-
-  try{
-    //Executar contagem e busca em uma única transação
-    const [projects, totalProjects] = await prisma.$transaction([
-      prisma.projects.findMany({
-        where: {
-          title: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        },
-        take,
-        skip
-      }),
-      prisma.projects.count({
-        where: {
-          title: {
-            contains: search,
-            mode: 'insensitive'
-          }
-        }
-      })   
-    ]);
-
-    res.status(200).json({projects, totalProjects});
-  }catch(error: any){ 
-    handleError(error, res, 'Error ao buscar todos os projetos.');
-  }
-}
-
-export const getOneProject = async (req: Request, res: Response) => {
-  const projectId = Number(req.params.id);
-
-  if(!validateId(projectId, res)) return;
-
-  try{
-    const project = await prisma.projects.findUnique({
-      where: {
-        id: projectId,
-      },
-    });
-
-
-    if(!project) {
-      res.status(404).json({error: 'Projeto não encontrado.'});
-      return;
-    }
-
-    res.status(200).json({project});
-  }catch(error: any){
-    handleError(error, res, 'Erro ao buscar o projeto.');
-  }
-}
-
-export const getUserProject = async (req: Request, res: Response) => {
+export const getProjects = async (req: Request, res: Response) => {
+  const search = String(req.query.search || '').trim();
+  const take = Math.min(Number(req.query.take) || 12, 100);
+  const skip = Math.max(Number(req.query.skip) || 0, 0);
+ 
   const { username } = req.query;
-
+  
   if(!username || typeof username !== 'string') {
-    res.status(400).json({error: 'Username inválido ou não fornecido'});
+    res.status(400).json({error: 'Nome de usuário inválido ou não fornecido'});
     return;
   }
   
@@ -142,25 +89,67 @@ export const getUserProject = async (req: Request, res: Response) => {
       return;
     }
     
-    const projects = await prisma.projects.findMany({
-      where: {
-        userId: user.id,
-      },
-      select: {id: true, title: true, tools: true}, 
-    })
+    const [projects, totalProjects] = await prisma.$transaction([
+      prisma.projects.findMany({
+        where: {
+          userId: user.id,
+          title: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        },
+        take,
+        skip,
+        select: {id: true, title: true, tools: true, imageUrl: true}, 
+      }),
+      prisma.projects.count({
+        where: {
+          title: {
+            contains: search,
+            mode: 'insensitive'
+          }
+        }
+      })
+    ]);
+    
 
 
     if(projects.length === 0) {
-      res.status(404).json({message: 'Projetos não encontrados.'})
+      res.status(404).json({message: 'Nenhum projeto cadastrado.'})
       return;
     }
 
-    res.status(200).json({projects})
+    res.status(200).json({projects, totalProjects});
   }catch(error: any){
     console.error('Error ao buscar o projeto: ' + error.message);
-    res.status(500).json({error: 'Erro ao buscar o projeto. Tente novamente mais tarde!'});
+    handleError(error, res, 'Erro ao buscar o projeto. Tente novamente mais tarde!');
   }
 }
+
+export const getOneProject = async (req: Request, res: Response) => {
+  const projectId = Number(req.params.id);
+  
+  if(!validateId(projectId, res)) return;
+  
+  try{
+    const project = await prisma.projects.findUnique({
+      where: {
+        id: projectId,
+      },
+    });
+    
+    
+    if(!project) {
+      res.status(404).json({error: 'Projeto não encontrado.'});
+      return;
+    }
+    
+    res.status(200).json({project});
+  }catch(error: any){
+    handleError(error, res, 'Erro ao buscar o projeto.');
+  }
+}
+
 
 export const updateProject = async (req: Request, res: Response) => {
   const id = Number(req.params.id);
