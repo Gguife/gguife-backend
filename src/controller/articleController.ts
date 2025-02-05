@@ -15,6 +15,8 @@ const validateId = (id: any, res: Response): boolean => {
   return true;
 }
 
+
+
 export const createArticle = async (req: Request, res: Response) => {
   const {title, introduction, content} = req.body;
   const imageUrl = req.file?.location;
@@ -126,3 +128,38 @@ export const getArticles = async (req: Request, res: Response) => {
     handleError(error, res, 'Erro ao buscar o projeto. Tente novamente mais tarde!');
   }
 }
+
+// Edite artigos
+export const updateArticle = async (req: Request, res: Response) => {
+  const id = Number(req.params.id);
+  const {title, introduction, content } = req.body;
+  const userId = req.user?.id; 
+
+  try {
+    const article = await prisma.articles.findUnique({
+      where: {
+        id: id,
+      }
+    });
+
+    if(!article) {
+      res.status(404).json({message: 'Projeto nao encontrado.'});
+      return;
+    }
+    
+    if(article.userId !== userId) {
+      res.status(403).json({message: 'Voce nao tem permissao para atualizar este artigo.'});
+      return;
+    }
+
+
+
+
+  }catch(error: any) {
+    handleError(error, res, '');
+  }
+}
+
+
+
+// Delete artigos

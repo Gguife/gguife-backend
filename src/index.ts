@@ -27,7 +27,7 @@ app.use(projectRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: '© 2024 - gguife backend online!' })
-})
+});
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
