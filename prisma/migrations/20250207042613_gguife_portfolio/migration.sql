@@ -3,6 +3,8 @@ CREATE TABLE "Users" (
     "id" SERIAL NOT NULL,
     "username" VARCHAR(25) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
+    "email" VARCHAR(100) NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -28,6 +30,15 @@ CREATE TABLE "Tags" (
     "tagName" VARCHAR(50) NOT NULL,
 
     CONSTRAINT "Tags_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "SubTags" (
+    "id" SERIAL NOT NULL,
+    "name" VARCHAR(50) NOT NULL,
+    "tagId" INTEGER NOT NULL,
+
+    CONSTRAINT "SubTags_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -57,6 +68,9 @@ CREATE TABLE "Categories" (
 CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Tags_tagName_key" ON "Tags"("tagName");
 
 -- AddForeignKey
@@ -64,6 +78,9 @@ ALTER TABLE "Articles" ADD CONSTRAINT "Articles_tagId_fkey" FOREIGN KEY ("tagId"
 
 -- AddForeignKey
 ALTER TABLE "Articles" ADD CONSTRAINT "Articles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "SubTags" ADD CONSTRAINT "SubTags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Projects" ADD CONSTRAINT "Projects_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

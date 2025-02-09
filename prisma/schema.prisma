@@ -15,8 +15,10 @@ model Users {
   id          Int       @id @default(autoincrement())
   username    String    @unique @db.VarChar(25)
   password    String    @db.VarChar(255)
-  articles    Articles[] // Relacionamento 1:N com Article
-  projects    Projects[] // Relacionamento 1:N com Project
+  email       String    @unique @db.VarChar(100)
+  active      Boolean   @default(false)
+  articles    Articles[]  @relation("UserToArticles") 
+  projects    Projects[]  @relation("UserToProjects")
 }
 
 model Articles {
@@ -27,16 +29,24 @@ model Articles {
   imageUrl     String?   @db.VarChar(255)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
-  tagId        Int       // Chave estrangeira para Tags
-  tag          Tags      @relation(fields: [tagId], references: [id])
-  userId       Int       // Relacionamento 1:N com User
-  user         Users      @relation(fields: [userId], references: [id])
+  tagId        Int      
+  tag          Tags      @relation("TagsToArticles", fields: [tagId], references: [id])
+  userId       Int      
+  user         Users     @relation("UserToArticles", fields: [userId], references: [id])
 }
 
 model Tags {
   id       Int        @id @default(autoincrement()) 
   tagName  String     @db.VarChar(50) @unique
-  articles Articles[] 
+  articles Articles[] @relation("TagsToArticles")
+  subTags  SubTags[]  @relation("TagsToSubTags")
+}
+
+model SubTags {
+  id      Int         @id @default(autoincrement())
+  name    String      @db.VarChar(50)
+  tagId   Int         
+  tag     Tags        @relation("TagsToSubTags", fields: [tagId], references: [id])
 }
 
 model Projects {
@@ -48,13 +58,13 @@ model Projects {
   linkRepository String?
   imageUrl       String?      @db.VarChar(255)
   categoryId     Int           
-  category       Categories   @relation(fields: [categoryId], references: [id])  
-  userId         Int          // Relacionamento 1:N com User
-  user           Users        @relation(fields: [userId], references: [id])
+  category       Categories   @relation("ProjectsToCategories", fields: [categoryId], references: [id])  
+  userId         Int          
+  user           Users        @relation("UserToProjects", fields: [userId], references: [id])
 }
 
 model Categories {
   id            Int            @id @default(autoincrement())
   name          String         @db.VarChar(25)
-  projects      Projects[]
+  projects      Projects[]     @relation("ProjectsToCategories")
 }
