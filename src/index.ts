@@ -1,35 +1,20 @@
-import express from "express";
-import { Request, Response } from "express";
+import { ExpressAdapter } from "./infra/http/httpServe";
 import dotenv from "dotenv";
-import cors from "cors";
-import userRouter from "./routes/userRouter";
-import projectRouter from "./routes/projectRouter";
+import allowedOrigin from "./application/config/cors.config";
+import { UserRepositoryDB } from "./user/user.repository";
+import UserController from "./user/user.controller";
 
 dotenv.config();
-const app = express();
 
-app.use(express.json());
-const allowedOrigins = [
-  'https://localhost:8080',
-  'http://localhost:5173',
-  process.env.FRONTEND_URL
-].filter((origin): origin is string => origin != undefined);
+const httpServer = new ExpressAdapter(allowedOrigin);
 
-app.use(
-  cors({
-    origin: allowedOrigins,
-    credentials: true,
-  })
-);
 
-app.use(userRouter);
-app.use(projectRouter);
+const userRepository = new UserRepositoryDB();
+const userController = new UserController(httpServer, userRepository);
 
-app.get('/', (req: Request, res: Response) => {
-  res.json({ message: '© 2024 - gguife backend online!' })
-})
+httpServer.route('get', '/', (params: any, body: any) => { return { message: "© 2025 - Gguife portfolio está Online!" } });
 
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-})
+
+userController.registerRoutes();
+
+httpServer.listen(Number(process.env.PORT) || 8080);
