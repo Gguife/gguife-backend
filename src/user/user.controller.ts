@@ -2,6 +2,7 @@ import HttpServer from "../infra/http/httpServe";
 import UserRepository from "./user.repository";
 import SendMail from "./usecase/email.send";
 import CreateUser from "./usecase/user.create";
+import UpdateUser from "./usecase/user.update";
 
 
 
@@ -12,10 +13,11 @@ export default class UserController {
 
   registerRoutes() {
     this.userRegister();
+    this.userUpdate();
   }
 
   private userRegister() {
-    this.httpServer.route('post', '/register', (_: any, body: any) => {
+    this.httpServer.route('post', '/user/register', async (_: any, body: any) => {
       const input = {
         username: body.username,
         email: body.email,
@@ -23,10 +25,22 @@ export default class UserController {
       };
 
       const sendEmail = new SendMail();
-      const output = new CreateUser(this.userRepository, sendEmail).run(input);
+      const output = await new CreateUser(this.userRepository, sendEmail).run(input);
 
       return output;
     })
   }
 
+
+  private userUpdate() {
+    this.httpServer.securityRoute('post', '/user/update', async (params: any, body: any, authDecoded: any) => {
+      const input = {
+        username: body.username,
+        password: body.password
+      };
+
+      const output = await new UpdateUser(this.userRepository).run(authDecoded.id, input);
+      return output;
+    })
+  }
 }
