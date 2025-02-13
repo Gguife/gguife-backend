@@ -8,7 +8,7 @@ export default class PasswordService {
     return bcrypt.hash(password, this.saltRounds);
   }
 
-  static  passwordCompare(password: string, hashedPassword: string): Promise<boolean> {
+  static passwordCompare(password: string, hashedPassword: string): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
   }
 
