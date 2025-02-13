@@ -3,6 +3,8 @@ import UserRepository from "./user.repository";
 import SendMail from "./usecase/email.send";
 import CreateUser from "./usecase/user.create";
 import UpdateUser from "./usecase/user.update";
+import Login from "./usecase/user.login";
+import DeleteUser from "./usecase/user.delete";
 
 
 
@@ -14,6 +16,8 @@ export default class UserController {
   registerRoutes() {
     this.userRegister();
     this.userUpdate();
+    this.delete();
+    this.login();
   }
 
   private userRegister() {
@@ -31,15 +35,33 @@ export default class UserController {
     })
   }
 
-
   private userUpdate() {
-    this.httpServer.securityRoute('post', '/user/update', async (params: any, body: any, authDecoded: any) => {
+    this.httpServer.securityRoute('post', '/user/update', async (_: any, body: any, authDecoded: any) => {
       const input = {
         username: body.username,
         password: body.password
       };
 
       const output = await new UpdateUser(this.userRepository).run(authDecoded.id, input);
+      return output;
+    })
+  }
+    
+  private delete() {
+    this.httpServer.securityRoute('delete', '/user/delete', async(_:any, body: any, authDecoded: any) => {
+      const output = await new DeleteUser(this.userRepository).run(authDecoded.id);
+      return output;
+    })
+  }
+
+  private login() {
+    this.httpServer.route('post', '/login', async (_: any, body: any) => {
+      const input = {
+        username: body.username,
+        password: body.password
+      };
+      
+      const output = await new Login(this.userRepository).run(input);
       return output;
     })
   }
