@@ -1,7 +1,7 @@
-import DomainError from "application/error/DomainError";
+import DomainError from "../../application/error/DomainError";
 import UserRepository from "./../user.repository";
 import User from "../../user/entity/User";
-import PasswordService from "application/services/password.service";
+import PasswordService from "../../application/services/password.service";
 
 export default class UpdateUser {
 
@@ -19,6 +19,9 @@ export default class UpdateUser {
     if(updateFields.username) {
       await this.userRepository.validateUsername(updateFields.username);
     }     
+
+    //Verificar senha original antes de atualizar senha
+    
 
     //Validando senha e retornando senha criptografada na att do usuario
     if(updateFields.password) {
