@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import authConfig from '../config/auth.config';
 import AuthError from '../../application/error/AuthError';
 
-export interface Payload {
+interface Payload {
   id: number,
   username: string
 }
