@@ -1,6 +1,6 @@
 import PasswordService from '../../application/services/password.service';
 import DomainError from '../../application/error/DomainError';
-import SMTPError from 'application/error/SmtpError';
+import SMTPError from '../../application/error/SmtpError';
 
 
 //Constantes de validacao
