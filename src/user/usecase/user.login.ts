@@ -1,4 +1,4 @@
-import JWTService from "application/services/jwt.service";
+import JWTService from "../../application/services/jwt.service";
 import DomainError from "../../application/error/DomainError";
 import PasswordService from "../../application/services/password.service";
 import UserRepository from "../../user/user.repository";
