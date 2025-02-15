@@ -15,9 +15,13 @@ export default class Login {
     const user = await this.userRepository.login(input.username);
     
     //Verificar senha usuario
-    const userPassword = user.password;
+    const userPassword = user.getPassword();
     const verifyPassword = await PasswordService.passwordCompare(input.password, userPassword);    
-    if(!verifyPassword) throw new DomainError('Credentials Invalid.'); 
+    if(!verifyPassword) throw new DomainError('Credentials Invalid.');
+    
+    //Verificar se usuario esta ativo
+    const isActive = user.getActive();
+    if(!isActive) throw new DomainError('Verify your email.'); 
     
     // Gerar token
     const jwtService = new JWTService();    
