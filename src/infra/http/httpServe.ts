@@ -40,8 +40,12 @@ export class ExpressAdapter implements HttpServer {
     this.app[method.toLowerCase()](url.replace(/\{|\}/g, ""), async function(req: Request, res: Response) {
       try {
         const tokenService = new TokenService();
-        const authDecoded = tokenService.validate(req.headers.authorization);
-        const output = await callback(req.params, req.body, authDecoded);
+
+        //Pegar token via query - garantindo ser uma string
+        const tokenFromQuery = typeof req.query.token === 'string' ? req.query.token : undefined;
+
+        const authDecoded = await tokenService.validate(req.headers.authorization, tokenFromQuery);
+        const output = await callback(req.params, req.query,req.body, authDecoded);
         res.status(statusCodeSuccess).json(output);  
       }catch(err: any) {
         res.status(handleStatusCode(err)).json({message: err.message});
