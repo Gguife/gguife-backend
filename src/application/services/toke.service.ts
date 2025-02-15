@@ -3,13 +3,16 @@ import JWTService from "./jwt.service";
 
 export default class TokenService {
 
-  validate(authHeader: string | undefined) {
-    if(!authHeader) throw new TokenError("Token not found.");
-    const token = authHeader.replace('Bearer ', '');
+  async validate(authHeader: string | undefined, queryToken: string | undefined) {
+    const token = queryToken || (authHeader?.replace('Bearer ', ''));
+    
+    
+    if(!token) throw new TokenError("Token not found.");
+    
     const jwtService = new JWTService();
 
     try {
-      const decodedToken = jwtService.verifyToken(token);
+      const decodedToken = await jwtService.verifyToken(token);
       return decodedToken;
     } catch(error: any) {
       throw new TokenError('Invalid Token.');
