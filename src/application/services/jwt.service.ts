@@ -25,8 +25,8 @@ export default class JWTService {
   verifyToken(token: string): Promise<string | object> {
     return new Promise((resolve, reject) => {
       jwt.verify(token, authConfig.secret, (err, decoded) => {
-        if(err) reject(new AuthError("Invalid Token or varificaion falied"));
-        resolve(decoded!);
+        if(err) reject(new AuthError("Invalid Token or varification falied"));
+        resolve(decoded as Payload);
       })
     }) 
 
