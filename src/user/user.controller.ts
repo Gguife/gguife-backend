@@ -5,6 +5,8 @@ import CreateUser from "./usecase/user.create";
 import UpdateUser from "./usecase/user.update";
 import Login from "./usecase/user.login";
 import DeleteUser from "./usecase/user.delete";
+import JWTService from "../application/services/jwt.service";
+import VerifyEmail from "./usecase/email.verify";
 
 
 
@@ -18,6 +20,7 @@ export default class UserController {
     this.userUpdate();
     this.delete();
     this.login();
+    this.verifyEmail();
   }
 
   private userRegister() {
@@ -36,9 +39,10 @@ export default class UserController {
   }
 
   private userUpdate() {
-    this.httpServer.securityRoute('post', '/user/update', async (_: any, body: any, authDecoded: any) => {
+    this.httpServer.securityRoute('put', '/user/update', async (_: any, query: any, body: any, authDecoded: any) => {
       const input = {
         username: body.username,
+        currentPassword: body.currentPassword,
         password: body.password
       };
 
@@ -48,9 +52,9 @@ export default class UserController {
   }
     
   private delete() {
-    this.httpServer.securityRoute('delete', '/user/delete', async(_:any, body: any, authDecoded: any) => {
-      const output = await new DeleteUser(this.userRepository).run(authDecoded.id);
-      return output;
+    this.httpServer.securityRoute('delete', '/user/delete', async(_:any, query: any, body: any, authDecoded: any) => {
+      await new DeleteUser(this.userRepository).run(authDecoded.id);
+      return {message: 'User successfully deleted.'};
     })
   }
 
@@ -63,6 +67,17 @@ export default class UserController {
       
       const output = await new Login(this.userRepository).run(input);
       return output;
+    })
+  }
+
+  //enpoint verify email
+  private verifyEmail() {
+    this.httpServer.securityRoute('get', '/verify-email', async (params: any, query: any, body: any, authDecoded: any) => {
+      const { token } = query;
+      const verifyEmail = new VerifyEmail(this.userRepository);    
+      await verifyEmail.run(token);
+
+      return {message: 'Email verified successfully.'}
     })
   }
 }
