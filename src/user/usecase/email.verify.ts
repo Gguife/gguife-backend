@@ -1,7 +1,6 @@
 import UserRepository from "../user.repository";
-import SMTPError from "application/error/SmtpError";
+import SMTPError from "../../application/error/SmtpError";
 import JWTService from "../../application/services/jwt.service";
-import { Payload } from "../../application/services/jwt.service"; 
 
 export default class VerifyEmail {
 
@@ -11,11 +10,11 @@ export default class VerifyEmail {
 
   async run(token: string): Promise<void> {
     
-    if(!token) throw new SMTPError('Token not provided.');
+    if(!token) throw new Error('Token not provided.');
     
     const jwtService = new JWTService();
     try {
-      const decoded = await jwtService.verifyToken(token) as Payload;
+      const decoded = await jwtService.verifyToken(token) as {id: number, username: string};
       const userId = decoded.id; 
     
       //verificar usuario
@@ -26,9 +25,9 @@ export default class VerifyEmail {
       user.verifyEmail();
 
       //Atualizar usuario
-      //await this.userRepository.update(user);
+      await this.userRepository.update(user);
     }catch(err: any) {
-      if(err instanceof SMTPError) throw err;
+      if(err instanceof Error) throw err;
       console.error('Error when checking email: ', err);
       throw new Error('Error when checking email');
     }
