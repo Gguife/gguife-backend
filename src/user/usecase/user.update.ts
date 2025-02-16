@@ -20,16 +20,26 @@ export default class UpdateUser {
       await this.userRepository.validateUsername(updateFields.username);
     }     
 
-    //Verificar senha original antes de atualizar senha
-    
+    //Para mudar senha, usuario deve fornecer a senha atual
+    if(updateFields.password) {      
+      if(!updateFields.currentPassword) throw new DomainError('Current password is required to update password.');
+      
+      //Verificar se nova senha e diferente da antiga senha
+      if(updateFields.password === updateFields.currentPassword) throw new DomainError('This password has already been registred, enter a new one.'); 
 
-    //Validando senha e retornando senha criptografada na att do usuario
-    if(updateFields.password) {
+      //Verificar senha atual antes de atualizar senha
+      const verifyPassword = await PasswordService.passwordCompare(updateFields.currentPassword, user.getPassword()); 
+      if(!verifyPassword) throw new DomainError('Current password is incorret.');
+      
+      
+      //Validando nova senha
       const passwordValidError = PasswordService.validateStrongPassword(updateFields.password);
       if(passwordValidError.length > 0){
         throw new DomainError(passwordValidError);
       }
+      
 
+      //Hash nova senha
       password = await PasswordService.hashPassword(updateFields.password);
     }
 
@@ -41,6 +51,7 @@ export default class UpdateUser {
 
 
 type Input = {
-  username?: string,
-  password?: string,
+  username?: string;
+  currentPassword?: string;
+  password?: string;
 }
