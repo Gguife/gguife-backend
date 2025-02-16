@@ -9,7 +9,7 @@ export default interface UserRepository {
   getAll(): Promise<{username: string; email: string; active: boolean}[]>;
   getById(id: number): Promise<User | undefined>;
   validateUsername(username: string): Promise<void>;
-  login(username: string): Promise<{id: number; username: string; password: string}>;
+  login(username: string): Promise<User>;
 }
 
 
@@ -90,21 +90,31 @@ export class UserRepositoryDB implements UserRepository {
       }
     })
   }
-
-  async login(username: string): Promise<{id: number; username: string; password: string}> {
+  
+  async delete(id: number): Promise<void> {    
+    await this.prisma.users.delete({
+      where: {
+        id: id
+      }
+    })
+  }
+ 
+  async login(username: string): Promise<User> {
     const user = await this.prisma.users.findUnique({
       where: {
         username: username,
-      }, select: {
-        id: true,
-        username: true,
-        password: true
       }
     });
 
     if(!user) throw new DomainError('Credentials invalid.');
 
-    return user;
+    return new User(
+      user.id,
+      user.username,
+      user.email,
+      user.password,
+      user.active
+    );
   }
 
   async validateUsername(username: string): Promise<void> {
@@ -117,12 +127,5 @@ export class UserRepositoryDB implements UserRepository {
     if(user) throw new DomainError('Username already exist.');
   }
 
-  async delete(id: number): Promise<void> {    
-    await this.prisma.users.delete({
-      where: {
-        id: id
-      }
-    })
-  }
 
 }
