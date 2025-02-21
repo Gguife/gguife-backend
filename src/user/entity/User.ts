@@ -32,8 +32,8 @@ export default class User {
     }   
     
     // Validacao obrigatoria de username e email
-    if(!isValidName(username)) throw new DomainError('Username invalid');
-    if(!isValidEmail(email)) throw new DomainError('Email invalid');
+    if(!isValidName(username)) throw new DomainError('Invalid username');
+    if(!isValidEmail(email)) throw new DomainError('Invalid email');
     
     //Validacao obrigatoria do password
     const passwordValidateError = PasswordService.validateStrongPassword(passwordPlainText);
