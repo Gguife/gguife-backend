@@ -17,14 +17,11 @@ export default class VerifyEmail {
       const decoded = await jwtService.verifyToken(token) as {id: number, username: string};
       const userId = decoded.id; 
     
-      //verificar usuario
       const user = await this.userRepository.getById(userId);
       if(!user) throw new SMTPError('User not found.');
 
-      //Ativar usuario
       user.verifyEmail();
 
-      //Atualizar usuario
       await this.userRepository.update(user);
     }catch(err: any) {
       if(err instanceof Error) throw err;
