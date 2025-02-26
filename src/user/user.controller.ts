@@ -43,7 +43,7 @@ export default class UserController {
       const input = {
         username: body.username,
         currentPassword: body.currentPassword,
-        password: body.password
+        newPassword: body.newPassword
       };
 
       const output = await new UpdateUser(this.userRepository).run(authDecoded.id, input);
