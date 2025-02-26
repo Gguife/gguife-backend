@@ -1,4 +1,4 @@
-import User from "../../src/user/entity/User";
+import User from "../../../src/user/entity/User";
 
 test("Should create user", async function() {
   const user = await User.create('Soteldo', 'soteldo@gmail.com', 'So123123.');
