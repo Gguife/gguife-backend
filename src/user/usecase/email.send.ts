@@ -1,4 +1,3 @@
-import UserRepository from '../../user/user.repository';
 import transporter from '../../application/config/smtp.config';
 
 export default class SendMail {
