@@ -11,19 +11,19 @@ export default class Login {
 
   
   async run(input: Input): Promise<OutputToken> {    
-    //Verificar e indentificar username passado
+    //Verify username
     const user = await this.userRepository.login(input.username);
     
-    //Verificar senha usuario
+    //Verify user password
     const userPassword = user.getPassword();
     const verifyPassword = await PasswordService.passwordCompare(input.password, userPassword);    
     if(!verifyPassword) throw new DomainError('Credentials Invalid.');
     
-    //Verificar se usuario esta ativo
+    //Verify if user is active
     const isActive = user.getActive();
     if(!isActive) throw new DomainError('Verify your email.'); 
     
-    // Gerar token
+    //Generate token
     const jwtService = new JWTService();    
     const token = jwtService.token({id: user.id, username: user.username});
 
