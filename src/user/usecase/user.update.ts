@@ -13,34 +13,33 @@ export default class UpdateUser {
     if(!user) throw new Error('User not found.');
     
     const username = updateFields.username ?? user.username;
-    let password = updateFields.password ?? user.getPassword();
+    let password = updateFields.newPassword ?? user.getPassword();
     
-    //Verificando se username ja existe
+    //Verify if username exist
     if(updateFields.username) {
       await this.userRepository.validateUsername(updateFields.username);
     }     
 
-    //Para mudar senha, usuario deve fornecer a senha atual
-    if(updateFields.password) {      
+    //To change user must provide current password
+    if(updateFields.newPassword) {      
       if(!updateFields.currentPassword) throw new DomainError('Current password is required to update password.');
       
-      //Verificar se nova senha e diferente da antiga senha
-      if(updateFields.password === updateFields.currentPassword) throw new DomainError('This password has already been registred, enter a new one.'); 
+      //Check if the new password is different from the old password
+      if(updateFields.newPassword === updateFields.currentPassword) throw new DomainError('This password has already been registred, enter a new one.'); 
 
-      //Verificar senha atual antes de atualizar senha
-      const verifyPassword = await PasswordService.passwordCompare(updateFields.currentPassword, user.getPassword()); 
-      if(!verifyPassword) throw new DomainError('Current password is incorret.');
-      
-      
-      //Validando nova senha
-      const passwordValidError = PasswordService.validateStrongPassword(updateFields.password);
+      //Verify the old password is correct
+      const verifyCurrentPassword = await PasswordService.passwordCompare(updateFields.currentPassword, user.getPassword()); 
+      if(!verifyCurrentPassword) throw new DomainError('Current password is incorret.');
+            
+      //Validate new password
+      const passwordValidError = PasswordService.validateStrongPassword(updateFields.newPassword);
       if(passwordValidError.length > 0){
         throw new DomainError(passwordValidError);
       }
       
 
-      //Hash nova senha
-      password = await PasswordService.hashPassword(updateFields.password);
+      //Hash new password
+      password = await PasswordService.hashPassword(updateFields.newPassword);
     }
 
     const newUser = new User(user.id, username, user.email, password, user.getActive());
@@ -53,5 +52,5 @@ export default class UpdateUser {
 type Input = {
   username?: string;
   currentPassword?: string;
-  password?: string;
+  newPassword?: string;
 }
