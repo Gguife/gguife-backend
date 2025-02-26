@@ -17,10 +17,11 @@ export default class CreateUser {
 
     const newUser = await this.userRepository.create(user);
 
-    //JWT envio de email para ativar usuario 
+    //Send token for verify email 
     const jwtService = new JWTService();
     const token = jwtService.token({id: newUser.id, username: newUser.username});
-    //Enviar email
+  
+    
     await this.sendEmail.run(newUser.email, token);
 
     return { id: newUser.id }
