@@ -5,7 +5,6 @@ import CreateUser from "./usecase/user.create";
 import UpdateUser from "./usecase/user.update";
 import Login from "./usecase/user.login";
 import DeleteUser from "./usecase/user.delete";
-import JWTService from "../application/services/jwt.service";
 import VerifyEmail from "./usecase/email.verify";
 
 
@@ -70,7 +69,7 @@ export default class UserController {
     })
   }
 
-  //enpoint verify email
+
   private verifyEmail() {
     this.httpServer.securityRoute('get', '/verify-email', async (params: any, query: any, body: any, authDecoded: any) => {
       const { token } = query;
