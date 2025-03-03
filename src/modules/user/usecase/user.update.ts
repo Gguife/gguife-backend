@@ -1,7 +1,7 @@
-import DomainError from "../../application/error/DomainError";
+import DomainError from "../../../application/error/DomainError";
 import UserRepository from "../user.repository";
 import User from "../entity/User";
-import PasswordService from "../../application/services/password.service";
+import PasswordService from "../../../application/services/password.service";
 
 export default class UpdateUser {
 

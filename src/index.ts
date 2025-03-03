@@ -1,8 +1,8 @@
 import { ExpressAdapter } from "./infra/http/httpServe";
 import dotenv from "dotenv";
 import allowedOrigin from "./application/config/cors.config";
-import { UserRepositoryDB } from "./user/user.repository";
-import UserController from "./user/user.controller";
+import { UserRepositoryDB } from "./modules/user/user.repository";
+import UserController from "./modules/user/user.controller";
 
 dotenv.config();
 

@@ -1,13 +1,11 @@
-import PasswordService from '../../application/services/password.service';
-import DomainError from '../../application/error/DomainError';
-import SMTPError from '../../application/error/SmtpError';
+import PasswordService from '../../../application/services/password.service';
+import DomainError from '../../../application/error/DomainError';
+import SMTPError from '../../../application/error/SmtpError';
 
-
-//Constantes de validacao
 const nameRegex = /^[A-Za-z0-9._-]{3,10}$/;
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-//Funcoes auxiliares de validacao
+// Auxiliaries validation fucntions
 const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
 const isValidName = (username: string) => nameRegex.test(username);
 const isValidEmail = (email: string) => emailRegex.test(email);
@@ -21,27 +19,26 @@ export default class User {
     private active: boolean,
     public verificationToken?: string,
   ){
-    // Nao valida nada no construtor, pois ele deve ser usado apenas para trazer dados do BD.
   }
   
-  // Static Factory Method - Para criar usuarios
+  // Static Factory Method - create user
   static async create(username: string, email: string, passwordPlainText: string) {
     // Validacao obrigatoria dos campos
     if(isFieldEmpty(username) || isFieldEmpty(email) || isFieldEmpty(passwordPlainText)) {
       throw new DomainError('The field is empty');
     }   
     
-    // Validacao obrigatoria de username e email
+    // Mandatory username and email validation
     if(!isValidName(username)) throw new DomainError('Invalid username');
     if(!isValidEmail(email)) throw new DomainError('Invalid email');
     
-    //Validacao obrigatoria do password
+    // Mandatory password validation
     const passwordValidateError = PasswordService.validateStrongPassword(passwordPlainText);
     if(passwordValidateError.length > 0) {
       throw new DomainError(passwordValidateError);      
     }
 
-    //criptografia da senha
+    // Hash password
     const hashedPassword = await PasswordService.hashPassword(passwordPlainText)
     const active = false;
 

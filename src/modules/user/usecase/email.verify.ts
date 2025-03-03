@@ -1,6 +1,6 @@
 import UserRepository from "../user.repository";
-import SMTPError from "../../application/error/SmtpError";
-import JWTService from "../../application/services/jwt.service";
+import SMTPError from "../../../application/error/SmtpError";
+import JWTService from "../../../application/services/jwt.service";
 
 export default class VerifyEmail {
 

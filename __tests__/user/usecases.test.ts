@@ -1,17 +1,17 @@
-import CreateUser from '../../src/user/usecase/user.create';
-import UpdateUser from '../../src/user/usecase/user.update';
-import DeleteUser from '../../src/user/usecase/user.delete';
-import Login from '../../src/user/usecase/user.login';
-import UserRepository from '../../src/user/user.repository';
-import SendEmail from '../../src/user/usecase/email.send';
+import CreateUser from '../../src/modules/user/usecase/user.create';
+import UpdateUser from '../../src/modules/user/usecase/user.update';
+import DeleteUser from '../../src/modules/user/usecase/user.delete';
+import Login from '../../src/modules/user/usecase/user.login';
+import UserRepository from '../../src/modules/user/user.repository';
+import SendEmail from '../../src/modules/user/usecase/email.send';
 import JWTService from '../../src/application/services/jwt.service';
-import User from '../../src/user/entity/User';
+import User from '../../src/modules/user/entity/User';
 import PasswordService from '../../src/application/services/password.service';
 
 //Mock dependecies
 jest.mock('../../src/infra/http/httpClient');
-jest.mock('../../src/user/user.repository');
-jest.mock('../../src/user/usecase/email.send');
+jest.mock('../../src/modules/user/user.repository');
+jest.mock('../../src/modules/user/usecase/email.send');
 jest.mock('../../src/application/services/jwt.service');
 
 

@@ -1,6 +1,6 @@
 import User from "../entity/User";
 import UserRepository from "../user.repository";
-import JWTService from "../../application/services/jwt.service";
+import JWTService from "../../../application/services/jwt.service";
 import SendEmail from './email.send';
 
 export default class CreateUser {

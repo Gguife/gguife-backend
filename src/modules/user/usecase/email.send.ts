@@ -1,4 +1,4 @@
-import transporter from '../../application/config/smtp.config';
+import transporter from '../../../application/config/smtp.config';
 
 export default class SendMail {
 

@@ -1,4 +1,4 @@
-import UserRepository from "user/user.repository";
+import UserRepository from "../user.repository";
 
 
 

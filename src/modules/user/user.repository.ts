@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import User from "./entity/User";
-import DomainError from "../application/error/DomainError";
+import DomainError from "./../../application/error/DomainError";
 
 export default interface UserRepository {
   create(user: User): Promise<User>;
