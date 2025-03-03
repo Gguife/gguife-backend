@@ -1,3 +1,4 @@
+import DomainError from "../../../application/error/DomainError";
 
 
 const isFieldEmpty = (field: string) => !field || field.trim().length === 0;
@@ -18,16 +19,12 @@ export default class Project {
 
 
   //Factory Method for create projects
-  static async create(title: string, content: string, tools: string) {
-    //Validetaion fields title, content, tools
-    if(isFieldEmpty(title)) {
-
+  static create(title: string, content: string, tools: string, categoryId: number, userId: number) {
+    //Validation fields title, content, tools
+    if(isFieldEmpty(title) || isFieldEmpty(content) || isFieldEmpty(tools)) {
+      throw new DomainError('The field is empty.');
     }
 
-
-    
+    return new Project(0, title, content, tools, categoryId, userId);
   }
-
-
-
 }
