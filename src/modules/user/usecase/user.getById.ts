@@ -1,5 +1,5 @@
-import User from "../../user/entity/User";
-import UserRepository from "../../user/user.repository";
+import User from "../entity/User";
+import UserRepository from "../user.repository";
 
 
 export default class GetUser {

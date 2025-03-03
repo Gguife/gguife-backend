@@ -1,6 +1,6 @@
 import DomainError from "../../application/error/DomainError";
-import UserRepository from "./../user.repository";
-import User from "../../user/entity/User";
+import UserRepository from "../user.repository";
+import User from "../entity/User";
 import PasswordService from "../../application/services/password.service";
 
 export default class UpdateUser {
