@@ -48,7 +48,7 @@ describe('User requests - create, udpate, delete, login', () => {
   
   describe('Create user', () => {
 
-    test('Should create user and send emai with jwt Token', async () => {
+    test('Should create user and send email with jwt Token', async () => {
       const input = {
         username: 'linux',
         email: 'linux@gmail.com',
