@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import allowedOrigin from "./application/config/cors.config";
 import { UserRepositoryDB } from "./modules/user/user.repository";
 import UserController from "./modules/user/user.controller";
-import ProjectController from "modules/project/project.controller";
+import ProjectController from "./modules/project/project.controller";
 import { ProjectRepositoryDB } from "./modules/project/project.repository";
 
 dotenv.config();
