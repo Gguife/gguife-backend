@@ -34,7 +34,7 @@ export default class Project {
 
 
   //Factory Method for create projects
-  static create(
+  static async create(
     title: string,
     content: string,
     tools: string,
@@ -51,9 +51,9 @@ export default class Project {
     if(isFieldEmpty(tools)) throw new DomainError('The field tools is empty.');  
 
     //Validation URl for fields deploy repository and image
-    if(!isFieldEmpty(linkDeploy) && !isValidURL(linkDeploy)) throw new DomainError('The link of deploy is a invalid URL.');
-    if(!isFieldEmpty(linkRepository) && !isValidURL(linkRepository)) throw new DomainError('The repository link is a invalid URL.');
-    if(!isFieldEmpty(imageURl) && !isValidURL(imageURl)) throw new DomainError('The image URL is a invalid URL.');
+    if(!isFieldEmpty(linkDeploy) && !isValidURL(linkDeploy)) throw new DomainError('The link of deploy project is a invalid URL.');
+    if(!isFieldEmpty(linkRepository) && !isValidURL(linkRepository)) throw new DomainError('The link of repository project is a invalid URL.');
+    if(!isFieldEmpty(imageURl) && !isValidURL(imageURl)) throw new DomainError('The link of image project is a invalid URL.');
 
     return new Project(
       0,
