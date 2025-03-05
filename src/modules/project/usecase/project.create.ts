@@ -18,7 +18,7 @@ export default class CreateProject {
       input.categoryId,
       input.linkDeploy,
       input.linkRepository,
-      input.iamgeUrl
+      input.imageUrl
     );
     
     // send response new project for projec repository create data
@@ -43,7 +43,7 @@ type Input = {
   categoryId: number,
   linkDeploy?: string,
   linkRepository?: string,
-  iamgeUrl?: string
+  imageUrl?: string
 }
 
 type Output = {
