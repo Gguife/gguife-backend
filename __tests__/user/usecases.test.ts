@@ -8,8 +8,7 @@ import JWTService from '../../src/application/services/jwt.service';
 import User from '../../src/modules/user/entity/User';
 import PasswordService from '../../src/application/services/password.service';
 
-//Mock dependecies
-jest.mock('../../src/infra/http/httpClient');
+//Mock dependencies
 jest.mock('../../src/modules/user/user.repository');
 jest.mock('../../src/modules/user/usecase/email.send');
 jest.mock('../../src/application/services/jwt.service');
