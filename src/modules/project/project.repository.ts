@@ -6,6 +6,7 @@ import DomainError from "application/error/DomainError";
 
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
+  getById(id: number): Promise<Project>;
 }
 
 
@@ -39,4 +40,16 @@ export class ProjectRepositoryDB implements ProjectRepository {
     }
   }
 
+
+  async getById(id: number): Promise<Project> {
+    const project = await this.prisma.projects.findUnique({
+      where: {
+        id: id,
+      }
+    });
+
+    if(!project) throw new DomainError('Project not found.');
+
+    return project;
+  } 
 }
