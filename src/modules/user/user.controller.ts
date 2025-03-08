@@ -1,4 +1,4 @@
-import HttpServer from "../../infra/http/httpServe";
+import HttpServer from "../../infra/http/httpServer";
 import UserRepository from "./user.repository";
 import SendMail from "./usecase/email.send";
 import CreateUser from "./usecase/user.create";
