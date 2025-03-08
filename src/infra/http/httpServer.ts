@@ -44,8 +44,10 @@ export class ExpressAdapter implements HttpServer {
         //Pegar token via query - garantindo ser uma string
         const tokenFromQuery = typeof req.query.token === 'string' ? req.query.token : undefined;
 
+        const imageUrl = req.file?.location;
+
         const authDecoded = await tokenService.validate(req.headers.authorization, tokenFromQuery);
-        const output = await callback(req.params, req.query,req.body, authDecoded);
+        const output = await callback(req.params, req.query, req.body, authDecoded, imageUrl);
         res.status(statusCodeSuccess).json(output);  
       }catch(err: any) {
         res.status(handleStatusCode(err)).json({message: err.message});
