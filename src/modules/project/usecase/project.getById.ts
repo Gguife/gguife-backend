@@ -6,7 +6,8 @@ export default class GetProject {
   }
 
   async run(id: number): Promise<Project>{
-    const project = await this.projectRespository.getById(id);    
+    const projectId = Number(id);
+    const project = await this.projectRespository.getOneProject(projectId);    
     return project;
   }
 }
