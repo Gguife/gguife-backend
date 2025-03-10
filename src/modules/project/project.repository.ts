@@ -92,7 +92,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
       }
     })
 
-    if(projects.length === 0) throw new DomainError('Do not have projects.');  
+    if(projects.length === 0) throw new DomainError('Not projects found.');  
     
     return projects.map((project) => ({
       id: project.id,
@@ -105,7 +105,5 @@ export class ProjectRepositoryDB implements ProjectRepository {
       categoryId: project.categoryId
     }));
   }
-  
-  
   
 }
