@@ -14,6 +14,7 @@ export default class GetProjectsUser {
     linkDeploy: string;
     linkRepository: string;
     imageUrl: string;
+    categoryId: number;
     }>> {
 
     const projects = await this.projectRepository.getAllUserProjects(userId);
