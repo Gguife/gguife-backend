@@ -1,12 +1,24 @@
 import { PrismaClient } from "@prisma/client";
 import Project from "./entity/Project";
-import DomainError from "application/error/DomainError";
+import DomainError from "../../application/error/DomainError";
 
 
 
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
-  getById(id: number): Promise<Project>;
+  getOneProject(id: number): Promise<Project>;
+  getAllUserProjects(userId: number): Promise<Array<{
+    id: number;
+    title: string;
+    content: string;
+    tools: string;
+    linkDeploy: string;
+    linkRepository: string;
+    imageUrl: string;
+    categoryId: number;
+  }>>;
+  //update project
+  //delete project
 }
 
 
@@ -41,7 +53,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
   }
 
 
-  async getById(id: number): Promise<Project> {
+  async getOneProject(id: number): Promise<Project> {
     const project = await this.prisma.projects.findUnique({
       where: {
         id: id,
@@ -52,4 +64,48 @@ export class ProjectRepositoryDB implements ProjectRepository {
 
     return project;
   } 
+
+  async getAllUserProjects(userId: number): Promise<Array<{
+    id: number;
+    title: string;
+    content: string;
+    tools: string;
+    linkDeploy: string;
+    linkRepository: string;
+    imageUrl: string;
+    categoryId: number;
+    }>>{
+      
+    const projects = await this.prisma.projects.findMany({
+      where: {
+        userId: userId
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        tools: true,
+        linkDeploy: true,
+        linkRepository: true,
+        imageUrl: true,
+        categoryId: true
+      }
+    })
+
+    if(projects.length === 0) throw new DomainError('Do not have projects.');  
+    
+    return projects.map((project) => ({
+      id: project.id,
+      title: project.title,
+      content: project.content,
+      tools: project.tools,
+      linkDeploy: project.linkDeploy ?? '',
+      linkRepository: project.linkRepository ?? '',
+      imageUrl: project.imageUrl ?? '',
+      categoryId: project.categoryId
+    }));
+  }
+  
+  
+  
 }
