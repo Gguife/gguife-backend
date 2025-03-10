@@ -1,6 +1,7 @@
 import HttpServer from "../../infra/http/httpServer";
 import ProjectRepository from "./project.repository";
 import CreateProject from "./usecase/project.create";
+import GetProjectsUser from "./usecase/project.getAll";
 import GetProject from "./usecase/project.getById";
 
 
@@ -40,12 +41,16 @@ export default class ProjectController {
 
   private getProject() {
     this.httpServer.securityRoute('get', '/project/:id', async (params: any, query: any, body: any, authDecoded: any) => {
-      const output = await new GetProject(params.id);
+      const output = await new GetProject(this.projectRepository).run(params.id);
       return output;
     })
   }
 
   private getAllProject() {
-
+    this.httpServer.securityRoute('get', '/projects', async (params: any, query: any, body: any, authDecoded: any) => {
+      const userId = authDecoded.id;
+      const output = await new GetProjectsUser(this.projectRepository).run(userId);
+      return output;
+    })
   }
 }
