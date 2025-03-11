@@ -3,6 +3,7 @@ import ProjectRepository from "./project.repository";
 import CreateProject from "./usecase/project.create";
 import GetProjectsUser from "./usecase/project.getAll";
 import GetProject from "./usecase/project.getById";
+import UpdateProject from "./usecase/project.update";
 
 
 export default class ProjectController {
@@ -14,6 +15,7 @@ export default class ProjectController {
     this.projectRegister();
     this.getProject();
     this.getAllProject();
+    this.updateProject();
   }
 
   private projectRegister() {
@@ -51,6 +53,21 @@ export default class ProjectController {
       const { username } = params;
       const output = await new GetProjectsUser(this.projectRepository).run(username);
       return output;
+    })
+  }
+
+  private updateProject() {
+    this.httpServer.securityRoute('post', '/project/update/:id', async (params: any, query: any, body: any, authDecoded: any) => {
+      const input = { 
+        title: body.title,
+        content: body.content,
+        tools: body.tools,
+        linkDeploy: body.linkDeploy,
+        linkRepository: body.linkRepository
+      }; 
+
+      const output = await new UpdateProject(this.projectRepository).run(params.id, input);
+      return output
     })
   }
 }
