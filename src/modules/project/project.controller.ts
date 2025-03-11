@@ -40,14 +40,14 @@ export default class ProjectController {
   }
 
   private getProject() {
-    this.httpServer.securityRoute('get', '/project/:id', async (params: any, query: any, body: any, authDecoded: any) => {
+    this.httpServer.route('get', '/project/:id', async (params: any, body: any) => {
       const output = await new GetProject(this.projectRepository).run(params.id);
       return output;
     })
   }
 
   private getAllProject() {
-    this.httpServer.securityRoute('get', '/projects/:username', async (params: any, query: any, body: any, authDecoded: any) => {
+    this.httpServer.route('get', '/projects/:username', async (params: any, body: any,) => {
       const { username } = params;
       const output = await new GetProjectsUser(this.projectRepository).run(username);
       return output;
