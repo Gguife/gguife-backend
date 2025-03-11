@@ -7,7 +7,7 @@ import DomainError from "../../application/error/DomainError";
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
   getOneProject(id: number): Promise<Project>;
-  getAllUserProjects(userId: number): Promise<Array<{
+  getAllUserProjects(username: string): Promise<Array<{
     id: number;
     title: string;
     content: string;
@@ -65,7 +65,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
     return project;
   } 
 
-  async getAllUserProjects(userId: number): Promise<Array<{
+  async getAllUserProjects(username: string): Promise<Array<{
     id: number;
     title: string;
     content: string;
@@ -75,10 +75,13 @@ export class ProjectRepositoryDB implements ProjectRepository {
     imageUrl: string;
     categoryId: number;
     }>>{
-      
+    
+    const user = await this.prisma.users.findUnique({where: {username: username}})
+    if(!user) throw new DomainError('User not found.');
+
     const projects = await this.prisma.projects.findMany({
       where: {
-        userId: userId
+        userId: user.id
       },
       select: {
         id: true,
