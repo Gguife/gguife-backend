@@ -17,7 +17,7 @@ export default class GetProjectsUser {
     categoryId: number;
     }>> {
 
-    const projects = await this.projectRepository.getAllUserProjects(username);
+    const projects = await this.projectRepository.getAll(username);
     return projects;
   }
 }
