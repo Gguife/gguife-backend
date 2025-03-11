@@ -6,8 +6,8 @@ import DomainError from "../../application/error/DomainError";
 
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
-  getOneProject(id: number): Promise<Project>;
-  getAllUserProjects(username: string): Promise<Array<{
+  getOne(id: number): Promise<Project>;
+  getAll(username: string): Promise<Array<{
     id: number;
     title: string;
     content: string;
@@ -17,7 +17,7 @@ export default interface ProjectRepository {
     imageUrl: string;
     categoryId: number;
   }>>;
-  //update project
+  update(id: number, input: updateInput): Promise<string>;
   //delete project
 }
 
@@ -53,7 +53,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
   }
 
 
-  async getOneProject(id: number): Promise<Project> {
+  async getOne(id: number): Promise<Project> {
     const project = await this.prisma.projects.findUnique({
       where: {
         id: id,
@@ -65,7 +65,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
     return project;
   } 
 
-  async getAllUserProjects(username: string): Promise<Array<{
+  async getAll(username: string): Promise<Array<{
     id: number;
     title: string;
     content: string;
@@ -108,5 +108,31 @@ export class ProjectRepositoryDB implements ProjectRepository {
       categoryId: project.categoryId
     }));
   }
-  
+
+  async update(id: number, input: updateInput): Promise<string> {
+    await this.prisma.projects.update({
+      where: {
+        id: id
+      },
+       data: {
+        title: input.title,
+        content: input.content,
+        tools: input.tools,
+        linkDeploy: input.linkDeploy,
+        linkRepository: input.linkRepository
+       }
+    })
+   
+    return 'Project update successfully.';
+  }
 }
+
+
+
+type updateInput = Partial<{
+  title: string,
+  content: string, 
+  tools: string,
+  linkDeploy: string,
+  linkRepository: string
+}>
