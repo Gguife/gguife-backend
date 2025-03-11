@@ -6,7 +6,7 @@ export default class GetProjectsUser {
   constructor(readonly projectRepository: ProjectRepository) {
   }
 
-  async run(userId: number): Promise<Array<{
+  async run(username: string): Promise<Array<{
     id: number;
     title: string;
     content: string;
@@ -17,7 +17,7 @@ export default class GetProjectsUser {
     categoryId: number;
     }>> {
 
-    const projects = await this.projectRepository.getAllUserProjects(userId);
+    const projects = await this.projectRepository.getAllUserProjects(username);
     return projects;
   }
 }
