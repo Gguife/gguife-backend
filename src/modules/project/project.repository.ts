@@ -17,8 +17,8 @@ export default interface ProjectRepository {
     imageUrl: string;
     categoryId: number;
   }>>;
-  update(id: number, input: updateInput): Promise<string>;
-  //delete project
+  update(id: number, input: updateInput): Promise<void>;
+  delete(id: number): Promise<void>;
 }
 
 
@@ -109,7 +109,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
     }));
   }
 
-  async update(id: number, input: updateInput): Promise<string> {
+  async update(id: number, input: updateInput): Promise<void> {
     await this.prisma.projects.update({
       where: {
         id: id
@@ -122,8 +122,14 @@ export class ProjectRepositoryDB implements ProjectRepository {
         linkRepository: input.linkRepository
        }
     })
-   
-    return 'Project update successfully.';
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.prisma.projects.delete({
+      where: {
+        id: id
+      }
+    })
   }
 }
 
