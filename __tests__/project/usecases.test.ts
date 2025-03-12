@@ -1,6 +1,8 @@
 import CreateProject from '../../src/modules/project/usecase/project.create';
 import GetOneProject from '../../src/modules/project/usecase/project.getById';
 import GetProjectsUser from '../../src/modules/project/usecase/project.getAll';
+import UpdateProject from '../../src/modules/project/usecase/project.update';
+import DeleteProject from '../../src/modules/project/usecase/project.delete';
 import ProjectRepository from '../../src/modules/project/project.repository';
 import Project from '../../src/modules/project/entity/Project';
 
@@ -14,18 +16,26 @@ describe('Project requests - read, create, update, delete', () => {
   let createProject: CreateProject;
   let getOneProject: GetOneProject;
   let getProjectsUser: GetProjectsUser;
+  let updateProject: UpdateProject;
+  let deleteProject: DeleteProject;
+
 
   beforeEach(() => {
 
     projectRepository = {
       create: jest.fn(),
-      getOneProject: jest.fn(),
-      getAllUserProjects: jest.fn()
+      getOne: jest.fn(),
+      getAll: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn()
     }
     
     createProject = new CreateProject(projectRepository);
     getOneProject = new GetOneProject(projectRepository);
     getProjectsUser = new GetProjectsUser(projectRepository);
+    updateProject = new UpdateProject(projectRepository);
+    deleteProject = new DeleteProject(projectRepository);
+
   
   })
 
@@ -88,7 +98,7 @@ describe('Project requests - read, create, update, delete', () => {
     };
     
     test('Should return a project by Id', async () => {  
-      projectRepository.getOneProject.mockResolvedValue(mockProject);
+      projectRepository.getOne.mockResolvedValue(mockProject);
     
       const response = await getOneProject.run(1);
 
@@ -96,7 +106,7 @@ describe('Project requests - read, create, update, delete', () => {
     });
 
     test('Should throw a DomainError if not found project', async () => {
-      projectRepository.getOneProject.mockRejectedValueOnce(new Error('DomainError: Project not found'));
+      projectRepository.getOne.mockRejectedValueOnce(new Error('DomainError: Project not found'));
 
       await expect(getOneProject.run(999))
         .rejects
@@ -105,7 +115,6 @@ describe('Project requests - read, create, update, delete', () => {
   })
 
 
-  //get all user projects
   describe('Get all projects of unique user', () => {
     const mockProjects = [
       {
@@ -131,15 +140,14 @@ describe('Project requests - read, create, update, delete', () => {
     ];
 
     test('Should return all projects by userId', async () => {
-      projectRepository.getAllUserProjects.mockResolvedValue(mockProjects);
+      projectRepository.getAll.mockResolvedValue(mockProjects);
 
-      const response = await getProjectsUser.run(1);
+      const response = await getProjectsUser.run('linux');
       expect(response).toEqual(mockProjects);
     })
 
-    //Shoudl throw a DomainError if not found project
     test('Should throw a DomainError if not found projects', async () => {
-      projectRepository.getOneProject.mockRejectedValueOnce(new Error('DomainError: Not projects found.'));
+      projectRepository.getOne.mockRejectedValueOnce(new Error('DomainError: Not projects found.'));
 
       await expect(getOneProject.run(999))
         .rejects
@@ -147,4 +155,55 @@ describe('Project requests - read, create, update, delete', () => {
     })
   })
 
+
+  describe('Update project', () => {
+    const id = 1;
+    const input = {
+      title: "Test title",
+      content: "Test Content",
+      tools: undefined,
+      linkDeploy: "http://google.com",
+      linkRepository: undefined
+    }
+
+
+
+    test('Shoudl update project and return a successfully message', async () => {
+      await projectRepository.update.mockResolvedValue(undefined);
+
+      await updateProject.run(id, input);
+
+      expect(projectRepository.update).toHaveBeenCalledWith(id,
+        expect.objectContaining({
+          title: "Test title",
+          content: "Test Content",
+          linkDeploy: "http://google.com",
+      }))
+    });
+
+
+    test('Should throw a DomainError if project have a invalid URL', async () => {
+      const invalidInput = {
+        title: "Test title",
+        content: "Test Content",
+        tools: undefined,
+        linkDeploy: "httgoogle.com",
+        linkRepository: undefined
+      }
+
+      await expect(updateProject.run(1, invalidInput)).rejects.toThrow('Invalid URL.');
+    })
+  })
+
+
+
+  describe('Delete project', () => {
+    test('Should delete project', async () => {
+      await projectRepository.delete.mockResolvedValue(undefined);
+
+      await deleteProject.run(1);
+
+      expect(projectRepository.delete).toHaveBeenCalledWith(1);
+    });
+  })
 })
