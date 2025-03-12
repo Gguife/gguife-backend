@@ -1,3 +1,4 @@
+import DomainError from "../../../application/error/DomainError";
 import ProjectRepository from "../project.repository";
 
 
@@ -5,10 +6,18 @@ import ProjectRepository from "../project.repository";
 export default class UpdateProject {
   constructor(readonly projectRepository: ProjectRepository){}
 
-  async run(id: number, input: Input): Promise<string> {
+  async run(id: number, input: Input): Promise<void> {
     
     const projectId = Number(id);
     
+    //url Validation
+    if (
+      (input.linkDeploy !== undefined && !isValidURL(input.linkDeploy)) || 
+      (input.linkRepository !== undefined && !isValidURL(input.linkRepository))
+    ) {
+      throw new DomainError('Invalid URL.');
+    }
+
     //Filtering only the fields that were actually sent in the body
     const project = Object.fromEntries(
     Object.entries({
@@ -20,11 +29,23 @@ export default class UpdateProject {
     }).filter(([_, value]) => value !== undefined)); // Remove undefined values
 
 
-    const newProject = await this.projectRepository.update(projectId, project);
-    return newProject;
+    await this.projectRepository.update(projectId, project);
   }
 }
 
+
+const isValidURL = (url: string) => {
+  const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
+
+  if(!urlPattern.test(url)) return false;
+
+  try {
+    new URL(url);
+    return true;
+  }catch(err: any){
+    return false;
+  }
+}  
 
 
 
