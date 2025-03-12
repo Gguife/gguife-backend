@@ -4,6 +4,7 @@ import CreateProject from "./usecase/project.create";
 import GetProjectsUser from "./usecase/project.getAll";
 import GetProject from "./usecase/project.getById";
 import UpdateProject from "./usecase/project.update";
+import DeleteProject from "./usecase/project.delete";
 
 
 export default class ProjectController {
@@ -16,6 +17,7 @@ export default class ProjectController {
     this.getProject();
     this.getAllProject();
     this.updateProject();
+    this.deleteProject();
   }
 
   private projectRegister() {
@@ -66,8 +68,15 @@ export default class ProjectController {
         linkRepository: body.linkRepository
       }; 
 
-      const output = await new UpdateProject(this.projectRepository).run(params.id, input);
-      return output
+      await new UpdateProject(this.projectRepository).run(params.id, input);
+      return { message: "Project update successfully." }; 
+    })
+  }
+
+  private deleteProject() {
+    this.httpServer.securityRoute('delete', '/project/delete/:id', async (params: any, query: any, body: any, authDecoded: any) => {
+      await new DeleteProject(this.projectRepository).run(params.id);
+      return { message: "Project deleted successfully." }; 
     })
   }
 }
