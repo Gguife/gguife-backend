@@ -110,11 +110,11 @@ src/
 │── infra/           # Infrastructure layer
   │── httpServer/    # HTTP Server configuration
   │── clientServer/  # Communication with exerternal services and APIs
-│── user/            # User module following domain-driven design principles
+│── modules/            # User module following domain-driven design principles
   │── entity/        # User entity definition
   │── usecase/       # User cases (business logic) related to users
-  │── user.controller.ts/     # Controller handling user requests
-  │── user.repository.ts/     # Repository for managing user persistence
+  │── controller     # Controller handling user requests
+  │── repository     # Repository for managing user persistence
 │── index.ts         # Main server entry point
 
 ```
