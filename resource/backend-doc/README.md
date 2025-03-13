@@ -1,16 +1,12 @@
 # Project Management API
 
 ## Indice
-- Introdcution
-- Requirements
-- Authentication
-- Endpoints
-  - User register
-  - User update
-  - User login
-  - User delete
-- Using Examples
-- Explanation
+- [Introduction](#introduction)
+- [Requirements](#requirements)
+- [Authentication](#authentication)
+- [Endpoints](#endpoints)
+- [Using Examples](#using-examples)
+- [Explanation](#explanation)
 
 ## Introduction
 The API was developed to facilitate user access control in the application. This control allows for the effective management of projects and articles created by the users. Users are allowed to register, log in, update their profile (note that the username is unique), reset their password, create and edit their projects and articles, as well as delete them.
@@ -31,11 +27,12 @@ To access certain endpoints, you will need an authentication token. This token i
     Authorization: Bearer your_jwt_token_here
   ```
 
+---
 
 ## Enpoints
-### User
+### 📌 User
 
-- **POST /register**
+- **POST /user/register**
   - **Description:** Register a new user.
   - **Headers:** `content-type: application/json`
   - **Body:**
@@ -53,7 +50,7 @@ To access certain endpoints, you will need an authentication token. This token i
     - `username`: string
     - `password`: string
 
-- **PUT /update**
+- **PUT /user/update**
   - **Description:** Update user information.
   - **Headers:** `Authorization: Bearer your_token_jwt_here`
   - **Body:**
@@ -61,16 +58,57 @@ To access certain endpoints, you will need an authentication token. This token i
     - `currentPassword?`: string
     - `password?`: string
 
-- **DELETE /delete**
+- **DELETE /user/delete**
   - **Description:** Delete user account.
   - **Headers:** `Authorization: Bearer your_token_jwt_here`
+
+---
+
+### 📌 Project
+
+- **POST /project/register**
+  - **Description:** Register a new project.
+  - **Headers:** 
+    - `content-type: application/json`
+    - `Authorization: Bearer your_token_jwt_here`
+  - **Body:**
+    - `title`: string
+    - `content`: string
+    - `tools`: string
+    - `categoryId`: number
+    - `linkDeploy`: string
+    - `linkRepository`: string
+    - `imageUrl`: string (URL gerada pelo S3)
+
+- **GET /project/:id**
+  - **Description:** Get one project with params.
+
+- **GET /projects/:username**
+  - **Description:** Get all projects of a user.
+
+- **PUT /project/update/:id**
+  - **Description:** Update project informations.
+  - **Headers:** 
+    - `content-type: application/json`
+    - `Authorization: Bearer your_token_jwt_here`
+  - **Body:**
+    - `title`: string
+    - `content`: string
+    - `tools`: string
+    - `linkDeploy`: string
+    - `linkRepository`: string
+
+- **DELETE /proejct/delete/:id**
+  - **Description:** Delete preject.
+  - **Headers:** `Authorization: Bearer your_token_jwt_here`
+
 
 
 
 ## Using Examples:
 ### User register
 ```
-curl -X POST "http://localhost:8080/user/register" \
+curl -X POST "http://localhost:8080/project/register" \
 -H "Content-Type: application/json" \
 -d '{
   "username": "yourname",
@@ -111,6 +149,55 @@ curl -X PUT "http://localhost:8080/user/update" \
 ### User delete
 ```
 curl -X DELETE "http://localhost:8080/user/delete" \
+-H "Authorization: Bearer seu_token_jwt_aqui" \
+-H "Content-Type: application/json"
+
+```
+
+---
+
+### Project register
+```
+curl -X POST "http://localhost:8080/user/register" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Teste title project 2",
+  "content": "teste content project 2",
+  "tools": "nodejs, postegresql",
+  "categoryId": 1,
+  "linkDeploy": "http://github.com/gguife",
+  "linkRepository": "http://github.com/gguife",
+  "imageUrl": "url gerada pelo bucket"
+}'
+```
+
+### Get one Project
+```
+curl -X POST "http://localhost:8080/project/:id"
+```
+
+### Get all Project
+```
+curl -X POST "http://localhost:8080/projects/:username" 
+```
+
+### Project update
+```
+curl -X PUT "http://localhost:8080/project/update/:id" \
+-H "Authorization: Bearer seu_token_jwt_aqui" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Teste title project 2",
+  "content": "teste content project 2",
+  "tools": "nodejs, postegresql",
+  "linkDeploy": undenifed,
+  "linkRepository": "http://github.com/gguife",
+}'
+```
+
+### Project delete
+```
+curl -X DELETE "http://localhost:8080/project/delete/:id" \
 -H "Authorization: Bearer seu_token_jwt_aqui" \
 -H "Content-Type: application/json"
 
