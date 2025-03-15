@@ -22,9 +22,9 @@ export default class Article {
     readonly title: string,
     readonly introduction: string,
     readonly content:string,
-    public imageUrl: string,
     readonly tagId: number,
     readonly userId: number,
+    public imageUrl?: string,
   ) {}
 
 
@@ -33,9 +33,9 @@ export default class Article {
     title: string,
     introduction: string,
     content: string,
-    imageUrl: string = '',
     tagId: number,
-    userId: number
+    userId: number,
+    imageUrl: string = ''
   ) {
 
     //Validation fields title, introduction, content
@@ -51,9 +51,9 @@ export default class Article {
       title,
       introduction,
       content,
-      imageUrl,
       tagId,
-      userId
+      userId,
+      imageUrl
     )
   }
 
