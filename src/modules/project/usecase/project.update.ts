@@ -6,10 +6,10 @@ import ProjectRepository from "../project.repository";
 export default class UpdateProject {
   constructor(readonly projectRepository: ProjectRepository){}
 
-  async run(id: number, input: Input): Promise<void> {
-    
+  async run(id: number, userIdInput: number, input: Input): Promise<void> {
     const projectId = Number(id);
-    
+    const userId = Number(userIdInput);
+
     //url Validation
     if (
       (input.linkDeploy !== undefined && !isValidURL(input.linkDeploy)) || 
@@ -29,7 +29,7 @@ export default class UpdateProject {
     }).filter(([_, value]) => value !== undefined)); // Remove undefined values
 
 
-    await this.projectRepository.update(projectId, project);
+    await this.projectRepository.update(projectId, userId, project);
   }
 }
 

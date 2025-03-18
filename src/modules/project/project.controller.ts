@@ -66,9 +66,11 @@ export default class ProjectController {
         tools: body.tools,
         linkDeploy: body.linkDeploy,
         linkRepository: body.linkRepository
-      }; 
+      };
+      
+      const userId = authDecoded.id;
 
-      await new UpdateProject(this.projectRepository).run(params.id, input);
+      await new UpdateProject(this.projectRepository).run(params.id, userId, input);
       return { message: "Project update successfully." }; 
     })
   }

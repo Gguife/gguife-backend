@@ -17,7 +17,7 @@ export default interface ProjectRepository {
     imageUrl: string;
     categoryId: number;
   }>>;
-  update(id: number, input: updateInput): Promise<void>;
+  update(id: number, userId: number, input: updateInput): Promise<void>;
   delete(id: number): Promise<void>;
 }
 
@@ -109,10 +109,11 @@ export class ProjectRepositoryDB implements ProjectRepository {
     }));
   }
 
-  async update(id: number, input: updateInput): Promise<void> {
+  async update(id: number, userId: number, input: updateInput): Promise<void> {
     await this.prisma.projects.update({
       where: {
-        id: id
+        id: id,
+        userId: userId
       },
        data: {
         title: input.title,
