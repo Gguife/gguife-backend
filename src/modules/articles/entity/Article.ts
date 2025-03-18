@@ -35,7 +35,7 @@ export default class Article {
     content: string,
     tagId: number,
     userId: number,
-    imageUrl: string = ''
+    imageUrl: string = ""
   ) {
 
     //Validation fields title, introduction, content
@@ -44,7 +44,7 @@ export default class Article {
     if(isFieldEmpty(content)) throw new DomainError('The field content is empty.');
 
     //Validation imageUrl 
-    if(!isValidURL(imageUrl)) throw new DomainError('The link of image article is a invalid URL.')
+    if(imageUrl && !isValidURL(imageUrl)) throw new DomainError('The link of image article is a invalid URL.')
 
     //Return article object    
     return new Article(
