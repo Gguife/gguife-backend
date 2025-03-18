@@ -3,6 +3,8 @@ import CreateArticle from "./usecase/article.create";
 import ArticleRepository from "./article.repository";
 import GetOneArticle from "./usecase/article.getById";
 import GetAllArticles from "./usecase/article.getAll";
+import DeleteArticle from "./usecase/article.delete";
+import UpdateArticle from "./usecase/article.update";
 
 export default class ArticleController {
 
@@ -12,6 +14,8 @@ export default class ArticleController {
     this.articleRegister();
     this.getArticle();
     this.getAllArticle();
+    this.articleDelete();
+    this.updateArticle();
   }
 
 
@@ -43,10 +47,33 @@ export default class ArticleController {
     })
   }
 
-    private getAllArticle() {
+  private getAllArticle() {
     this.httpServer.route('get', '/articles/:username', async (params: any, body: any) => {
       const output = await new GetAllArticles(this.articleRepository).run(params.username);
       return output;   
+    })
+  }
+
+  private updateArticle() {
+    this.httpServer.securityRoute('post', '/article/update/:id', async (params: any, query: any, body: any, authDecoded: any, imageUrl: any) => {
+      const input = {
+        title: body.title,
+        introduction: body.introduction,
+        content: body.content,
+        tagId: body.tagId
+      }
+
+      const userId = authDecoded.id;
+
+      await new UpdateArticle(this.articleRepository).run(params.id, userId, input);
+      return {message: "Article updated successfully."};
+    })
+  }
+
+  private articleDelete() {
+    this.httpServer.securityRoute('delete', '/article/:id', async (params: any, query: any, body: any, authDecoded: any, imageUrl: any) => {
+      await new DeleteArticle(this.articleRepository).run(params.id);
+      return {message: "Article deleted successfuly."}
     })
   }
 }
