@@ -8,6 +8,8 @@ export default interface ArticleRepository {
   create(article: Article): Promise<{id: number}>;
   getOne(id: number): Promise<Article>;
   getAll(username: string): Promise<GetAllOutput[]>;
+  update(id: number, userId: number, input: udpateInput): Promise<void>;
+  delete(id: number): Promise<void>;
 }
 
 
@@ -90,6 +92,29 @@ export class articleRepositoryDB implements ArticleRepository {
       tagId: article.tagId
     }));
   }
+
+  async update(id: number, userId: number, input: udpateInput): Promise<void> {
+    await this.prisma.articles.update({
+      where: {
+        id: id,
+        userId: userId
+      },
+      data: {
+        title: input.title,
+        introduction: input.introduction,
+        content: input.content,
+        tagId: input.tagId
+      }
+    })  
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.prisma.articles.delete({
+      where: {
+        id: id
+      }
+    })
+  }
 }
 
 
@@ -102,3 +127,10 @@ type GetAllOutput = {
   imageUrl: string,
   tagId: number
 };
+
+type udpateInput = {
+  title: string, 
+  introduction: string,
+  content: string,
+  tagId: number
+}
