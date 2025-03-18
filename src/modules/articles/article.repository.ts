@@ -7,6 +7,7 @@ import DomainError from "application/error/DomainError";
 export default interface ArticleRepository {
   create(article: Article): Promise<{id: number}>;
   getOne(id: number): Promise<Article>;
+  getAll(username: string): Promise<GetAllOutput[]>;
 }
 
 
@@ -54,4 +55,50 @@ export class articleRepositoryDB implements ArticleRepository {
       article.imageUrl
     )
   }
+
+  async getAll(username: string): Promise<GetAllOutput[]> {
+    const user = await this.prisma.users.findUnique({
+      where: {
+        username: username,
+      }
+    })  
+
+    if(!user) throw new DomainError('User not found.');
+
+    const articles = await this.prisma.articles.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        introduction: true,
+        content: true,
+        imageUrl: true,
+        tagId: true
+      }
+    })
+
+    if(articles.length === 0) throw new DomainError(`${user.username} don't have any projects`);
+    
+    return articles.map((article) => ({
+      id: article.id,
+      title: article.title,
+      introduction: article.introduction,
+      content: article.content,
+      imageUrl: article.imageUrl ?? "",
+      tagId: article.tagId
+    }));
+  }
 }
+
+
+
+type GetAllOutput = {
+  id: number,
+  title: string, 
+  introduction: string,
+  content: string,
+  imageUrl: string,
+  tagId: number
+};
