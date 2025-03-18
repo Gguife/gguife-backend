@@ -51,9 +51,9 @@ export default class Project {
     if(isFieldEmpty(tools)) throw new DomainError('The field tools is empty.');  
 
     //Validation URl for fields deploy repository and image
-    if(!isFieldEmpty(linkDeploy) && !isValidURL(linkDeploy)) throw new DomainError('The link of deploy project is a invalid URL.');
-    if(!isFieldEmpty(linkRepository) && !isValidURL(linkRepository)) throw new DomainError('The link of repository project is a invalid URL.');
-    if(!isFieldEmpty(imageURl) && !isValidURL(imageURl)) throw new DomainError('The link of image project is a invalid URL.');
+    if(linkDeploy && !isValidURL(linkDeploy)) throw new DomainError('The link of deploy project is a invalid URL.');
+    if(linkRepository && !isValidURL(linkRepository)) throw new DomainError('The link of repository project is a invalid URL.');
+    if(imageURl && !isValidURL(imageURl)) throw new DomainError('The link of image project is a invalid URL.');
 
     return new Project(
       0,
