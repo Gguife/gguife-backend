@@ -11,7 +11,7 @@ import Project from '../../src/modules/project/entity/Project';
 jest.mock('../../src/modules/project/project.repository');
 
 
-describe('Project requests - read, create, update, delete', () => {
+describe('Project usecases - read, create, update, delete', () => {
   let projectRepository: jest.Mocked<ProjectRepository>;
   let createProject: CreateProject;
   let getOneProject: GetOneProject;
@@ -158,6 +158,7 @@ describe('Project requests - read, create, update, delete', () => {
 
   describe('Update project', () => {
     const id = 1;
+    const userId = 1;
     const input = {
       title: "Test title",
       content: "Test Content",
@@ -168,12 +169,14 @@ describe('Project requests - read, create, update, delete', () => {
 
 
 
-    test('Shoudl update project and return a successfully message', async () => {
+    test('Shoudl update project', async () => {
       await projectRepository.update.mockResolvedValue(undefined);
 
-      await updateProject.run(id, input);
+      await updateProject.run(id, userId,input);
 
-      expect(projectRepository.update).toHaveBeenCalledWith(id,
+      expect(projectRepository.update).toHaveBeenCalledWith(
+        id, 
+        userId,
         expect.objectContaining({
           title: "Test title",
           content: "Test Content",
@@ -191,7 +194,7 @@ describe('Project requests - read, create, update, delete', () => {
         linkRepository: undefined
       }
 
-      await expect(updateProject.run(1, invalidInput)).rejects.toThrow('Invalid URL.');
+      await expect(updateProject.run(1, 1, invalidInput)).rejects.toThrow('Invalid URL.');
     })
   })
 
