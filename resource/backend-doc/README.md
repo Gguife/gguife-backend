@@ -98,7 +98,42 @@ To access certain endpoints, you will need an authentication token. This token i
     - `linkDeploy`: string
     - `linkRepository`: string
 
-- **DELETE /proejct/delete/:id**
+- **DELETE /project/delete/:id**
+  - **Description:** Delete preject.
+  - **Headers:** `Authorization: Bearer your_token_jwt_here`
+
+### 📌 Articles
+
+- **POST /article/register**
+  - **Description:** Register a new article.
+  - **Headers:** 
+    - `content-type: application/json`
+    - `Authorization: Bearer your_token_jwt_here`
+  - **Body:**
+    - `title`: string
+    - `introduction`: string
+    - `content`: string
+    - `tagId`: number
+    - `imageUrl`: string (URL gerada pelo S3)
+
+- **GET /article/:id**
+  - **Description:** Get one article with params.
+
+- **GET /articles/:username**
+  - **Description:** Get all articles of a user.
+
+- **PUT /article/update/:id**
+  - **Description:** Update project informations.
+  - **Headers:** 
+    - `content-type: application/json`
+    - `Authorization: Bearer your_token_jwt_here`
+  - **Body:**
+    - `title`: string
+    - `introduction`: string
+    - `content`: string
+    - `tagId`: number
+
+- **DELETE /article/:id**
   - **Description:** Delete preject.
   - **Headers:** `Authorization: Bearer your_token_jwt_here`
 
@@ -158,7 +193,7 @@ curl -X DELETE "http://localhost:8080/user/delete" \
 
 ### Project register
 ```
-curl -X POST "http://localhost:8080/user/register" \
+curl -X POST "http://localhost:8080/project/register" \
 -H "Content-Type: application/json" \
 -d '{
   "title": "Teste title project 2",
@@ -201,6 +236,49 @@ curl -X DELETE "http://localhost:8080/project/delete/:id" \
 -H "Authorization: Bearer seu_token_jwt_aqui" \
 -H "Content-Type: application/json"
 
+```
+
+### Article register
+```
+curl -X POST "http://localhost:8080/article/register" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Test title",
+  "introduction": "Test introduction",
+  "content": "Test content",
+  "tagId": 1,
+  "imageUrl": "url gerada pelo bucket"
+}'
+```
+
+### Get one Article
+```
+curl -X POST "http://localhost:8080/article/:id"
+```
+
+### Get all user Articles
+```
+curl -X POST "http://localhost:8080/articles/:username" 
+```
+
+### Article update
+```
+curl -X PUT "http://localhost:8080/article/update/:id" \
+-H "Authorization: Bearer seu_token_jwt_aqui" \
+-H "Content-Type: application/json" \
+-d '{
+  "title": "Test title att",
+  "introduction": "Test introduction att",
+  "content": "Test content att",
+  "tagId": 2,
+}'
+```
+
+### Article delete
+```
+curl -X DELETE "http://localhost:8080/article/:id" \
+-H "Authorization: Bearer seu_token_jwt_aqui" \
+-H "Content-Type: application/json"
 ```
 
 ## Explanation
