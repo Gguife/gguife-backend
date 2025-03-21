@@ -28,7 +28,7 @@ export class ExpressAdapter implements HttpServer {
   route(method: string, url: string, callback: Function, statusCodeSuccess: number = 200): void {
     this.app[method.toLowerCase()](url.replace(/\{|\}/g, ""), async function(req: Request, res: Response) {
       try {
-        const output = await callback(req.params, req.body);
+        const output = await callback(req.params, req.body, req.query);
         res.status(statusCodeSuccess).json(output)
       }catch(err: any) {
         res.status(handleStatusCode(err)).json({message: err.message});

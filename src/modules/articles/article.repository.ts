@@ -7,7 +7,7 @@ import DomainError from "../../application/error/DomainError";
 export default interface ArticleRepository {
   create(article: Article): Promise<{id: number}>;
   getOne(id: number): Promise<GetOutput>;
-  getAll(username: string): Promise<GetOutput[]>;
+  getAll(username: string, offset: number, limit: number): Promise<{total: number; articles: GetOutput[]}>;
   update(id: number, userId: number, input: udpateInput): Promise<void>;
   delete(id: number): Promise<void>;
 }
@@ -57,19 +57,23 @@ export class ArticleRepositoryDB implements ArticleRepository {
     };
   }
 
-  async getAll(username: string): Promise<GetOutput[]> {
+  async getAll(username: string, offset: number, limit: number): Promise<{total: number; articles: GetOutput[]}> {
     const user = await this.prisma.users.findUnique({
       where: {
         username: username,
       }
     })  
-
+    
     if(!user) throw new DomainError('User not found.');
+  
+    const totalArticles = await this.prisma.articles.count({where: { userId: user.id }});
 
     const articles = await this.prisma.articles.findMany({
       where: {
         userId: user.id,
       },
+      skip: offset,
+      take: limit,
       select: {
         id: true,
         title: true,
@@ -82,7 +86,8 @@ export class ArticleRepositoryDB implements ArticleRepository {
 
     if(articles.length === 0) throw new DomainError(`${user.username} don't have any projects`);
     
-    return articles.map((article) => ({
+
+    const formattedArticles = articles.map((article) => ({
       id: article.id,
       title: article.title,
       introduction: article.introduction,
@@ -90,6 +95,12 @@ export class ArticleRepositoryDB implements ArticleRepository {
       imageUrl: article.imageUrl ?? "",
       tagId: article.tagId
     }));
+
+
+    return {
+      total: totalArticles,
+      articles: formattedArticles
+    };
   }
 
   async update(id: number, userId: number, input: udpateInput): Promise<void> {

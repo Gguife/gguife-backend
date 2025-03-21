@@ -48,9 +48,18 @@ export default class ArticleController {
   }
 
   private getAllArticle() {
-    this.httpServer.route('get', '/articles/:username', async (params: any, body: any) => {
-      const output = await new GetAllArticles(this.articleRepository).run(params.username);
-      return output;   
+    this.httpServer.route('get', '/articles/:username', async (params: any, body: any, query: any) => {
+      const page = +query.page || 1;
+      const limit = +query.limit || 10;
+      const offset = (page - 1) * limit;
+
+      const output = await new GetAllArticles(this.articleRepository).run(params.username, offset, limit);
+      return {
+        page,
+        limit,
+        total: output.total,
+        articles: output.articles
+      };   
     })
   }
 

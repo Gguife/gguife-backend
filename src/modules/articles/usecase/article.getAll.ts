@@ -4,8 +4,8 @@ export default class GetAllArticles {
   constructor(readonly articleRepository: ArticleRepository){}
 
 
-  async run(username: string): Promise<Output[]>{
-    const article = await this.articleRepository.getAll(username);
+  async run(username: string, offset: number, limit: number): Promise<{total: number; articles: Output[]}>{
+    const article = await this.articleRepository.getAll(username, offset, limit);
     return article;
   }
 }
