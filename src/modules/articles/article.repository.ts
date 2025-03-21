@@ -1,20 +1,20 @@
 import { PrismaClient } from "@prisma/client";
 import Article from "./entity/Article";
-import DomainError from "application/error/DomainError";
+import DomainError from "../../application/error/DomainError";
 
 
 
 export default interface ArticleRepository {
   create(article: Article): Promise<{id: number}>;
-  getOne(id: number): Promise<Article>;
-  getAll(username: string): Promise<GetAllOutput[]>;
+  getOne(id: number): Promise<GetOutput>;
+  getAll(username: string): Promise<GetOutput[]>;
   update(id: number, userId: number, input: udpateInput): Promise<void>;
   delete(id: number): Promise<void>;
 }
 
 
 
-export class articleRepositoryDB implements ArticleRepository {
+export class ArticleRepositoryDB implements ArticleRepository {
   private prisma: PrismaClient;
 
   constructor(){
@@ -38,7 +38,7 @@ export class articleRepositoryDB implements ArticleRepository {
   }
 
 
-  async getOne(id: number): Promise<Article> {
+  async getOne(id: number): Promise<GetOutput> {
     const article = await this.prisma.articles.findUnique({
       where: {
         id: id,
@@ -46,19 +46,18 @@ export class articleRepositoryDB implements ArticleRepository {
     }); 
 
     if(!article) throw new DomainError('Article not found.');
-    if (!article.imageUrl) throw new DomainError('The imageUrl is not defined.');
 
-    return new Article(
-      article.title,
-      article.introduction,
-      article.content,
-      article.tagId,
-      article.userId,
-      article.imageUrl
-    )
+    return {
+      id: article.id,
+      title: article.title,
+      introduction: article.introduction,
+      content: article.content,
+      imageUrl: article.imageUrl ?? "",
+      tagId: article.tagId
+    };
   }
 
-  async getAll(username: string): Promise<GetAllOutput[]> {
+  async getAll(username: string): Promise<GetOutput[]> {
     const user = await this.prisma.users.findUnique({
       where: {
         username: username,
@@ -119,7 +118,7 @@ export class articleRepositoryDB implements ArticleRepository {
 
 
 
-type GetAllOutput = {
+type GetOutput = {
   id: number,
   title: string, 
   introduction: string,
