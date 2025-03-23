@@ -24,7 +24,7 @@ export default class Article {
     readonly content:string,
     readonly tagId: number,
     readonly userId: number,
-    public imageUrl?: string,
+    public imageUrl: string | "",
   ) {}
 
 
