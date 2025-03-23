@@ -22,6 +22,7 @@ export default class UpdateProject {
     const project = Object.fromEntries(
     Object.entries({
       title: input.title,
+      introduction: input.introduction,
       content: input.content,
       tools: input.tools,
       linkDeploy: input.linkDeploy,
@@ -51,6 +52,7 @@ const isValidURL = (url: string) => {
 
 type Input = Partial<{
   title: string,
+  introduction: string,
   content: string, 
   tools: string,
   linkDeploy: string,
