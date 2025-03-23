@@ -44,6 +44,7 @@ describe('Project usecases - read, create, update, delete', () => {
     test('Should create project and return project id and project title', async () => {
       const input = {
         title: 'title project',
+        introduction: 'introduction project',
         content: 'content project',
         tools: 'nodejs',
         userId: 1,
@@ -55,6 +56,7 @@ describe('Project usecases - read, create, update, delete', () => {
 
       const mockProject = await Project.create(
         input.title, 
+        input.introduction,
         input.content,
         input.tools, 
         input.userId,
@@ -70,6 +72,7 @@ describe('Project usecases - read, create, update, delete', () => {
 
       expect(projectRepository.create).toHaveBeenCalledWith(expect.objectContaining({
         title: 'title project',
+        introduction: 'introduction project',
         content: 'content project',
         tools: 'nodejs',
         userId: 1,
@@ -83,18 +86,14 @@ describe('Project usecases - read, create, update, delete', () => {
     })
   })
 
-    
   describe('Get a project', () => {
     const mockProject = {
-      id:1,
       title: 'title project',
       content: 'content project',
-      tools: 'nodejs',
+      tools: ['nodejs', 'express'],
       linkDeploy: "https://www.google.com",
       linkRepository: "https://www.google.com",
       imageUrl: "https://www.google.com",
-      userId: 1,
-      categoryId: 1,
     };
     
     test('Should return a project by Id', async () => {  
@@ -115,13 +114,19 @@ describe('Project usecases - read, create, update, delete', () => {
   })
 
 
+
+  //Inseriri test pagination aqui
   describe('Get all projects of unique user', () => {
+    const page = 1;
+    const limit = 10;
+    const offset = 3;
     const mockProjects = [
       {
         id: 1,
         title: 'Title Project 1',
+        introduction: 'introduction project 1',
         content: 'Content for project 1',
-        tools: 'Node.js, Express',
+        tools: ['Node.js', 'Express'],
         linkDeploy: "https://www.google.com",
         linkRepository: "https://www.github.com/project1",
         imageUrl: "https://www.google.com/project1.jpg",
@@ -130,8 +135,9 @@ describe('Project usecases - read, create, update, delete', () => {
       {
         id: 2,
         title: 'Title Project 2',
+        introduction: 'introduction project 1',
         content: 'Content for project 2',
-        tools: 'React, Node.js',
+        tools: ['React', 'Node.js'],
         linkDeploy: "https://www.example.com",
         linkRepository: "https://www.github.com/project2",
         imageUrl: "https://www.example.com/project2.jpg",
@@ -139,11 +145,11 @@ describe('Project usecases - read, create, update, delete', () => {
       }
     ];
 
-    test('Should return all projects by userId', async () => {
-      projectRepository.getAll.mockResolvedValue(mockProjects);
+    test('Should return all projects by username', async () => {
+      projectRepository.getAll.mockResolvedValue({total: 10, projects: mockProjects});
 
-      const response = await getProjectsUser.run('linux');
-      expect(response).toEqual(mockProjects);
+      const response = await getProjectsUser.run('linux', offset, limit);
+      expect(response).toEqual({total: 10, projects: mockProjects});
     })
 
     test('Should throw a DomainError if not found projects', async () => {
@@ -161,6 +167,7 @@ describe('Project usecases - read, create, update, delete', () => {
     const userId = 1;
     const input = {
       title: "Test title",
+      introduction: 'introduction project',
       content: "Test Content",
       tools: undefined,
       linkDeploy: "http://google.com",
@@ -179,6 +186,7 @@ describe('Project usecases - read, create, update, delete', () => {
         userId,
         expect.objectContaining({
           title: "Test title",
+          introduction: 'introduction project',
           content: "Test Content",
           linkDeploy: "http://google.com",
       }))
@@ -188,6 +196,7 @@ describe('Project usecases - read, create, update, delete', () => {
     test('Should throw a DomainError if project have a invalid URL', async () => {
       const invalidInput = {
         title: "Test title",
+        introduction: 'introduction project',
         content: "Test Content",
         tools: undefined,
         linkDeploy: "httgoogle.com",
