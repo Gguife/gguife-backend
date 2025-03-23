@@ -22,13 +22,14 @@ export default class Project {
   constructor(
     readonly id: number,
     readonly title: string,
+    readonly introduction: string,
     readonly content: string,
     readonly tools: string,
     readonly userId: number,
     readonly categoryId: number,
-    public linkDeploy: string | null,
-    public linkRepository: string | null,
-    public imageUrl: string | null
+    public linkDeploy: string | "",
+    public linkRepository: string | "",
+    public imageUrl: string | ""
   ){
   }
 
@@ -36,6 +37,7 @@ export default class Project {
   //Factory Method for create projects
   static async create(
     title: string,
+    introduction: string,
     content: string,
     tools: string,
     userId: number,
@@ -47,6 +49,7 @@ export default class Project {
 
     //Validation fields title, content, tools
     if(isFieldEmpty(title)) throw new DomainError('The field title is empty.');  
+    if(isFieldEmpty(introduction)) throw new DomainError('The field introduction is empty.');  
     if(isFieldEmpty(content)) throw new DomainError('The field content is empty.');  
     if(isFieldEmpty(tools)) throw new DomainError('The field tools is empty.');  
 
@@ -58,6 +61,7 @@ export default class Project {
     return new Project(
       0,
       title,
+      introduction,
       content, 
       tools, 
       userId, 
