@@ -15,7 +15,7 @@ CREATE TABLE "Articles" (
     "title" VARCHAR(255) NOT NULL,
     "introduction" VARCHAR(255) NOT NULL,
     "content" TEXT NOT NULL,
-    "imageUrl" VARCHAR(255),
+    "imageUrl" VARCHAR(255) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "tagId" INTEGER NOT NULL,
@@ -33,23 +33,15 @@ CREATE TABLE "Tags" (
 );
 
 -- CreateTable
-CREATE TABLE "SubTags" (
-    "id" SERIAL NOT NULL,
-    "name" VARCHAR(50) NOT NULL,
-    "tagId" INTEGER NOT NULL,
-
-    CONSTRAINT "SubTags_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Projects" (
     "id" SERIAL NOT NULL,
     "title" VARCHAR(255) NOT NULL,
+    "introduction" VARCHAR(50) NOT NULL,
     "content" TEXT NOT NULL,
     "tools" TEXT NOT NULL,
-    "linkDeploy" TEXT,
-    "linkRepository" TEXT,
-    "imageUrl" VARCHAR(255),
+    "linkDeploy" TEXT NOT NULL,
+    "linkRepository" TEXT NOT NULL,
+    "imageUrl" VARCHAR(255) NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "userId" INTEGER NOT NULL,
 
@@ -78,9 +70,6 @@ ALTER TABLE "Articles" ADD CONSTRAINT "Articles_tagId_fkey" FOREIGN KEY ("tagId"
 
 -- AddForeignKey
 ALTER TABLE "Articles" ADD CONSTRAINT "Articles_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "SubTags" ADD CONSTRAINT "SubTags_tagId_fkey" FOREIGN KEY ("tagId") REFERENCES "Tags"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Projects" ADD CONSTRAINT "Projects_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Categories"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
