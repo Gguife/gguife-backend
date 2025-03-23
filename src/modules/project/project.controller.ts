@@ -28,6 +28,7 @@ export default class ProjectController {
 
       const input = {
         title: body.title,
+        introduction: body.introduction,
         content: body.content,
         tools: body.tools,
         userId: userId,
@@ -51,10 +52,19 @@ export default class ProjectController {
   }
 
   private getAllProject() {
-    this.httpServer.route('get', '/projects/:username', async (params: any, body: any,) => {
+    this.httpServer.route('get', '/projects/:username', async (params: any, body: any, query: any) => {
       const { username } = params;
-      const output = await new GetProjectsUser(this.projectRepository).run(username);
-      return output;
+      const page = +query.page || 1;
+      const limit = +query.limit || 10;
+      const offset = (page - 1) * limit;
+
+      const output = await new GetProjectsUser(this.projectRepository).run(username, offset, limit);
+      return {
+        page, 
+        limit,
+        total: output.total,
+        projects: output.projects
+      };
     })
   }
 
@@ -62,6 +72,7 @@ export default class ProjectController {
     this.httpServer.securityRoute('post', '/project/update/:id', async (params: any, query: any, body: any, authDecoded: any) => {
       const input = { 
         title: body.title,
+        introduction: body.introduction,
         content: body.content,
         tools: body.tools,
         linkDeploy: body.linkDeploy,
