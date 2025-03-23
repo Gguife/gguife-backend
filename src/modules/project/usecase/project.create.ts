@@ -12,6 +12,7 @@ export default class CreateProject {
     // Use factory method for create project
     const project = await Project.create(
       input.title,
+      input.introduction,
       input.content,
       input.tools,
       input.userId,
@@ -37,13 +38,14 @@ export default class CreateProject {
 
 type Input = {
   title: string, 
+  introduction: string
   content: string,
   tools: string,
   userId: number,
   categoryId: number,
-  linkDeploy?: string,
-  linkRepository?: string,
-  imageUrl?: string
+  linkDeploy: string,
+  linkRepository: string,
+  imageUrl: string
 }
 
 type Output = {
