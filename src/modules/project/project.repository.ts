@@ -6,8 +6,8 @@ import DomainError from "../../application/error/DomainError";
 
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
-  getOne(id: number): Promise<Project>;
-  getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputAllProjects[]}>;
+  getOne(id: number): Promise<OutputGetOne>;
+  getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputGetAll[]}>;
   update(id: number, userId: number, input: updateInput): Promise<void>;
   delete(id: number): Promise<void>;
 }
@@ -44,19 +44,27 @@ export class ProjectRepositoryDB implements ProjectRepository {
   }
 
 
-  async getOne(id: number): Promise<Project> {
+  async getOne(id: number): Promise<OutputGetOne> {
     const project = await this.prisma.projects.findUnique({
       where: {
         id: id,
       }
     });
 
-    if(!project) throw new DomainError('Project not found.');
+    if(!project) throw new DomainError('Project not found.');    
+    const arrTools = project.tools.split(","); 
 
-    return project;
+    return {
+      title: project.title,
+      content: project.content,
+      tools: arrTools,
+      linkDeploy: project.linkDeploy,
+      linkRepository: project.linkRepository,
+      imageUrl: project.imageUrl,
+    };
   } 
 
-  async getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputAllProjects[]}>{
+  async getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputGetAll[]}>{
     
     const user = await this.prisma.users.findUnique({where: {username: username}})
     if(!user) throw new DomainError('User not found.');
@@ -142,7 +150,7 @@ type updateInput = Partial<{
   linkRepository: string
 }>
 
-type OutputAllProjects = {
+type OutputGetAll = {
   id: number,
   title: string, 
   introduction: string,
@@ -152,4 +160,13 @@ type OutputAllProjects = {
   linkRepository: string,
   imageUrl: string,
   categoryId: number
+}
+
+type OutputGetOne = {
+  title: string,
+  content: string,
+  tools: string[],
+  linkDeploy: string,
+  linkRepository: string,
+  imageUrl: string
 }
