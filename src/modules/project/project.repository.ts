@@ -7,16 +7,7 @@ import DomainError from "../../application/error/DomainError";
 export default interface ProjectRepository {
   create(project: Project): Promise<{id: number, title: string}>;
   getOne(id: number): Promise<Project>;
-  getAll(username: string): Promise<Array<{
-    id: number;
-    title: string;
-    content: string;
-    tools: string;
-    linkDeploy: string;
-    linkRepository: string;
-    imageUrl: string;
-    categoryId: number;
-  }>>;
+  getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputAllProjects[]}>;
   update(id: number, userId: number, input: updateInput): Promise<void>;
   delete(id: number): Promise<void>;
 }
@@ -35,6 +26,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
     const projectSaved = await this.prisma.projects.create({
       data: {
         title: project.title,
+        introduction: project.introduction,
         content: project.content,
         tools: project.tools,
         linkDeploy: project.linkDeploy,
@@ -44,7 +36,6 @@ export class ProjectRepositoryDB implements ProjectRepository {
         userId: project.userId
       }
     })
-
 
     return {
       id: projectSaved.id,
@@ -65,27 +56,25 @@ export class ProjectRepositoryDB implements ProjectRepository {
     return project;
   } 
 
-  async getAll(username: string): Promise<Array<{
-    id: number;
-    title: string;
-    content: string;
-    tools: string;
-    linkDeploy: string;
-    linkRepository: string;
-    imageUrl: string;
-    categoryId: number;
-    }>>{
+  async getAll(username: string, offset: number, limit: number): Promise<{total: number, projects: OutputAllProjects[]}>{
     
     const user = await this.prisma.users.findUnique({where: {username: username}})
     if(!user) throw new DomainError('User not found.');
 
+    const totalProjects = await this.prisma.projects.count({
+      where: { userId: user.id }
+    });
+    
     const projects = await this.prisma.projects.findMany({
       where: {
         userId: user.id
       },
+      skip: offset,
+      take: limit, 
       select: {
         id: true,
         title: true,
+        introduction: true,
         content: true,
         tools: true,
         linkDeploy: true,
@@ -95,18 +84,25 @@ export class ProjectRepositoryDB implements ProjectRepository {
       }
     })
 
-    if(projects.length === 0) throw new DomainError('Not projects found.');  
+    if(projects.length === 0) throw new DomainError('Not projects found.'); 
     
-    return projects.map((project) => ({
+    const formattedProjects = projects.map((project) => ({
       id: project.id,
       title: project.title,
+      introduction: project.introduction,
       content: project.content,
-      tools: project.tools,
+      tools: project.tools.split(",").map(tool => tool.trim()),
       linkDeploy: project.linkDeploy ?? '',
       linkRepository: project.linkRepository ?? '',
       imageUrl: project.imageUrl ?? '',
       categoryId: project.categoryId
-    }));
+    }))
+    
+
+    return {
+      total: totalProjects, 
+      projects: formattedProjects
+    };
   }
 
   async update(id: number, userId: number, input: updateInput): Promise<void> {
@@ -117,6 +113,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
       },
        data: {
         title: input.title,
+        introduction: input.introduction,
         content: input.content,
         tools: input.tools,
         linkDeploy: input.linkDeploy,
@@ -138,8 +135,21 @@ export class ProjectRepositoryDB implements ProjectRepository {
 
 type updateInput = Partial<{
   title: string,
+  introduction: string,
   content: string, 
   tools: string,
   linkDeploy: string,
   linkRepository: string
 }>
+
+type OutputAllProjects = {
+  id: number,
+  title: string, 
+  introduction: string,
+  content: string,
+  tools: string[],
+  linkDeploy: string,
+  linkRepository: string,
+  imageUrl: string,
+  categoryId: number
+}
