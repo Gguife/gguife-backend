@@ -26,7 +26,7 @@ model Articles {
   title        String    @db.VarChar(255)
   introduction String    @db.VarChar(255)
   content      String    @db.Text 
-  imageUrl     String?   @db.VarChar(255)
+  imageUrl     String   @db.VarChar(255)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
   tagId        Int      
@@ -47,9 +47,9 @@ model Projects {
   introduction   String       @db.VarChar(50)
   content        String       @db.Text
   tools          String       
-  linkDeploy     String?
-  linkRepository String?
-  imageUrl       String?      @db.VarChar(255)
+  linkDeploy     String
+  linkRepository String
+  imageUrl       String      @db.VarChar(255)
   categoryId     Int           
   category       Categories   @relation("ProjectsToCategories", fields: [categoryId], references: [id])  
   userId         Int          
