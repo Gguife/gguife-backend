@@ -39,19 +39,12 @@ model Tags {
   id       Int        @id @default(autoincrement()) 
   tagName  String     @db.VarChar(50) @unique
   articles Articles[] @relation("TagsToArticles")
-  subTags  SubTags[]  @relation("TagsToSubTags")
-}
-
-model SubTags {
-  id      Int         @id @default(autoincrement())
-  name    String      @db.VarChar(50)
-  tagId   Int         
-  tag     Tags        @relation("TagsToSubTags", fields: [tagId], references: [id])
 }
 
 model Projects {
   id             Int          @id @default(autoincrement())
   title          String       @db.VarChar(255)
+  introduction   String       @db.VarChar(50)
   content        String       @db.Text
   tools          String       
   linkDeploy     String?
