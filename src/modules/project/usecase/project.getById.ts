@@ -15,7 +15,8 @@ export default class GetProject {
       tools: project.tools,
       imageUrl: project.imageUrl, 
       linkDeploy: project.linkDeploy,
-      linkRepository: project.linkRepository
+      linkRepository: project.linkRepository,
+      userId: project.userId
     };
   }
 }
@@ -27,5 +28,6 @@ type Output = {
   tools: string[],
   linkRepository: string,
   linkDeploy: string,
-  imageUrl: string
+  imageUrl: string,
+  userId: number
 }

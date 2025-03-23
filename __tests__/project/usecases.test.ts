@@ -94,6 +94,7 @@ describe('Project usecases - read, create, update, delete', () => {
       linkDeploy: "https://www.google.com",
       linkRepository: "https://www.google.com",
       imageUrl: "https://www.google.com",
+      userId: 1
     };
     
     test('Should return a project by Id', async () => {  
@@ -117,7 +118,6 @@ describe('Project usecases - read, create, update, delete', () => {
 
   //Inseriri test pagination aqui
   describe('Get all projects of unique user', () => {
-    const page = 1;
     const limit = 10;
     const offset = 3;
     const mockProjects = [
