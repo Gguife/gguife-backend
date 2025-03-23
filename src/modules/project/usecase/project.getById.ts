@@ -5,23 +5,27 @@ export default class GetProject {
   constructor(readonly projectRespository: ProjectRepository){
   }
 
-  async run(id: number): Promise<{
-    id: number;
-    title: string;
-    introduction: string;
-    tools: string[];
-    imageUrl: string;
-    }> {
+  async run(id: number): Promise<Output> {
     const projectId = Number(id);
     const project = await this.projectRespository.getOne(projectId);    
-    const arrTools = project.tools.split(","); 
   
     return {
-      id: project.id,
       title: project.title,
-      introduction: project.introduction,
-      tools: arrTools,
+      content: project.content,
+      tools: project.tools,
       imageUrl: project.imageUrl, 
+      linkDeploy: project.linkDeploy,
+      linkRepository: project.linkRepository
     };
   }
+}
+
+
+type Output = {
+  title: string,
+  content: string,
+  tools: string[],
+  linkRepository: string,
+  linkDeploy: string,
+  imageUrl: string
 }
