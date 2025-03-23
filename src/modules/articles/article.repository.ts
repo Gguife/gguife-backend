@@ -84,7 +84,7 @@ export class ArticleRepositoryDB implements ArticleRepository {
       }
     })
 
-    if(articles.length === 0) throw new DomainError(`${user.username} don't have any projects`);
+    if(articles.length === 0) throw new DomainError(`${user.username} don't have any articles`);
     
 
     const formattedArticles = articles.map((article) => ({
