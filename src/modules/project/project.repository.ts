@@ -61,6 +61,7 @@ export class ProjectRepositoryDB implements ProjectRepository {
       linkDeploy: project.linkDeploy,
       linkRepository: project.linkRepository,
       imageUrl: project.imageUrl,
+      userId: project.userId
     };
   } 
 
@@ -168,5 +169,6 @@ type OutputGetOne = {
   tools: string[],
   linkDeploy: string,
   linkRepository: string,
-  imageUrl: string
+  imageUrl: string,
+  userId: number
 }
