@@ -74,12 +74,12 @@ describe('Article usecases - read, create, update, delete', () => {
 
   describe('Get a Article', () => {
     const article = {
+      id: 1,
       title: 'Test title',
       introduction: 'Test introduction',
       content: 'Test content',
       imageUrl: '',
-      tagId: 1,
-      userId: 1
+      tagId: 1
     }
 
     test('Should return article by article id', async () => {
@@ -102,37 +102,38 @@ describe('Article usecases - read, create, update, delete', () => {
 
   describe('Get all articles', () => {
     test('Should get all user projects by username', async () => {
-      const allArticles = [
-        {
-          id: 1,
-          title: 'Test title',
-          introduction: 'Test introduction',
-          content: 'Test content',
-          imageUrl: '',
-          tagId: 1,
-          userId: 1
-        },
-        {
-          id: 2,
-          title: 'Test title 2',
-          introduction: 'Test introduction 2',
-          content: 'Test content 2',
-          imageUrl: '',
-          tagId: 1,
-          userId: 1
-        }
-      ];
+      const allArticles = {
+        total: 10,
+        articles: [
+          {
+            id: 1,
+            title: 'Test title',
+            introduction: 'Test introduction',
+            content: 'Test content',
+            imageUrl: '',
+            tagId: 1
+          },
+          {
+            id: 2,
+            title: 'Test title 2',
+            introduction: 'Test introduction 2',
+            content: 'Test content 2',
+            imageUrl: '',
+            tagId: 1
+          }
+        ]
+      };
 
       articleRepository.getAll.mockResolvedValue(allArticles);
 
-      const response = await getAllArticles.run('linux');      
+      const response = await getAllArticles.run('Linux', 10, 6);      
       expect(response).toEqual(allArticles);
     })    
 
     test('Should throw a DomainError if not found user', async () => {
       articleRepository.getAll.mockRejectedValueOnce(new Error('DomainError: Not have any articles.'));
 
-      await expect(getAllArticles.run('linux'))
+      await expect(getAllArticles.run('linux', 10 ,6))
       .rejects
       .toThrow('DomainError: Not have any articles.')
     })
