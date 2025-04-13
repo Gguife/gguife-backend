@@ -154,8 +154,7 @@ async function main() {
             id: 1,
             title: "Primeiro mês usando Linux",
             introduction: "Compartilhando minha experiência, distro escolhida e o que mais me agradou.",
-            content: `
-              Já se passou um mês desde que migrei para o Linux como meu sistema operacional. Então, decidi trazer alguns relatos sobre o porquê estou usando o Linux, qual distro utilizo neste meu início e o que mais estou gostando até agora.
+            content: `Já se passou um mês desde que migrei para o Linux como meu sistema operacional. Então, decidi trazer alguns relatos sobre o porquê estou usando o Linux, qual distro utilizo neste meu início e o que mais estou gostando até agora.
 
               ❓ Por que escolhi o Linux?
               Primeiramente, por curiosidade. Nós, que damos nossos primeiros passos na área de desenvolvimento, sempre ouvimos o quão vantajoso é usar o Linux.
@@ -167,8 +166,7 @@ async function main() {
 
               ❤️ O que mais gostei no Linux?
               Minha jornada como desenvolvedor tem evoluído muito com o Linux, especialmente por estar 100% no terminal, o que torna tudo mais interessante e produtivo. Estou aprendendo a usar o Vim para aumentar minha produtividade (ainda apanhando bastante, kkkk) e aproveitando ao máximo o Docker e outras ferramentas.
-              No meu lado de cybersecurity, o Linux oferece mais segurança e uma integração mais natural com os comandos do Kali Linux, além de facilitar o uso de VMs e containers para meus testes e simulações.
-            `,
+              No meu lado de cybersecurity, o Linux oferece mais segurança e uma integração mais natural com os comandos do Kali Linux, além de facilitar o uso de VMs e containers para meus testes e simulações.`,
             imageUrl: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/mgpsit7137z49tmosbb3.jpg",
             tagId: 1,
             userId: 1,
@@ -177,8 +175,7 @@ async function main() {
             id: 2,
             title: "Guia de Códigos de Status HTTP",
             introduction: "Principais códigos de status HTTP",
-            content:`
-              Quando um navegador faz uma solicitação a um serviço web, o servidor responde com um código de status HTTP, indicando o resultado da requisição. Para simplificar e automatizar o desenvolvimento da sua aplicação web, aqui está uma lista dos principais códigos de status HTTP que podem ser retornados.
+            content:`Quando um navegador faz uma solicitação a um serviço web, o servidor responde com um código de status HTTP, indicando o resultado da requisição. Para simplificar e automatizar o desenvolvimento da sua aplicação web, aqui está uma lista dos principais códigos de status HTTP que podem ser retornados.
 
               ### 1XX Information
               | **Código** | **Descrição**                                                                 |
@@ -246,8 +243,7 @@ async function main() {
               | **502**    | **Bad Gateway**: O servidor recebeu uma resposta inválida ao tentar atuar como gateway ou proxy. |
               | **503**    | **Service Unavailable**: O servidor está temporariamente indisponível, geralmente devido a manutenção ou sobrecarga. |
               | **504**    | **Gateway Timeout**: O servidor, atuando como gateway ou proxy, não recebeu uma resposta a tempo. |
-              | **505**    | **HTTP Version Not Supported**: O servidor não suporta a versão do protocolo HTTP usada na requisição. |
-            `,
+              | **505**    | **HTTP Version Not Supported**: O servidor não suporta a versão do protocolo HTTP usada na requisição. |`,
             imageUrl: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/0qil3okxlbi4xzhzvt6l.png", 
             tagId: 1,
             userId: 1,
@@ -256,8 +252,7 @@ async function main() {
             id: 3,
             title: "",
             introduction: "",
-            content: `
-              Quando falamos sobre padrões e nomenclaturas no Git, é um ponto importante, embora não seja essencial. No entanto, seguir boas práticas, como manter um padrão consistente e utilizar nomes claros e descritivos nas branches, pode facilitar bastante o desenvolvimento em equipe e a manutenção do projeto. 
+            content: `Quando falamos sobre padrões e nomenclaturas no Git, é um ponto importante, embora não seja essencial. No entanto, seguir boas práticas, como manter um padrão consistente e utilizar nomes claros e descritivos nas branches, pode facilitar bastante o desenvolvimento em equipe e a manutenção do projeto. 
 
               Neste artigo, quero compartilhar um guia prático de versionamento e nomenclaturas que adotei e que tem sido útil no meu dia-a-dia!
 
@@ -371,8 +366,7 @@ async function main() {
 
               ---
 
-              Seguir essas nomenclaturas e padrões não apenas melhora a organização do seu repositório, mas também facilita a colaboração e o entendimento das mudanças feitas ao longo do tempo. Espero que este guia prático ajude você!
-            `,
+              Seguir essas nomenclaturas e padrões não apenas melhora a organização do seu repositório, mas também facilita a colaboração e o entendimento das mudanças feitas ao longo do tempo. Espero que este guia prático ajude você!`,
             imageUrl: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/50nhj5x5dgkpvx9w7mdl.png",
             tagId: 1,
             userId: 1,
@@ -381,8 +375,7 @@ async function main() {
             id: 4,
             title: "Reinicio automático de uma aplicação Nodejs com Docker",
             introduction: "Aprenda a utilizar o Nodemon dentro de containers Docker para agilizar o desenvolvimento da sua aplicação Node.js",
-            content: `
-              Este Artigo tem objetivo agilizar o desenvolvimento de uma aplicação Nodejs sem ter a necessidade de subir o container a cada alteração feita no código.
+            content: `Este Artigo tem objetivo agilizar o desenvolvimento de uma aplicação Nodejs sem ter a necessidade de subir o container a cada alteração feita no código.
 
               ## Nodemon
               Nodemon é uma ferramenta para Node.js que reinicia automaticamente a aplicação sempre que detecta alterações nos arquivos do projeto, facilitando o desenvolvimento. Para usá-lo, podemos instalar o nodemon como uma dependência global ou localmente no projeto. Depois, basta ajustar o script no \`package.json\`, trocando o comando \`node \` por \`nodemon \` para que ele gerencie a execução da aplicação automaticamente. 
@@ -492,8 +485,7 @@ async function main() {
               \`\`\`
 
               ## Conclusão
-              Rodamos uma aplicação em Nodejs em um container Docker e, com a ajuda do nodemon, somos capazes de desenvolver nossa aplicação executada dentro do container sem a necessidade de subir o container toda vez que é feita alguma alteração.    
-            `,
+              Rodamos uma aplicação em Nodejs em um container Docker e, com a ajuda do nodemon, somos capazes de desenvolver nossa aplicação executada dentro do container sem a necessidade de subir o container toda vez que é feita alguma alteração.`,
             imageUrl: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/pcsswvjr2vpbqsiyv7d3.jpg",
             tagId: 1,
             userId: 1,
