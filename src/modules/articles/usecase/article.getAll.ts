@@ -6,7 +6,16 @@ export default class GetAllArticles {
 
   async run(username: string, offset: number, limit: number): Promise<{total: number; articles: Output[]}>{
     const article = await this.articleRepository.getAll(username, offset, limit);
-    return article;
+    const formattedArticles = article.articles.map(article => ({
+      ...article,
+      createdAt: new Date(article.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric"
+      })
+    }));
+
+    return {total: article.total, articles: formattedArticles};
   }
 }
 
@@ -17,5 +26,6 @@ type Output = {
   introduction: string,
   content: string,
   imageUrl: string,
-  tagId: number
+  tagId: number,
+  createdAt: string
 }

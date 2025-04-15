@@ -42,6 +42,15 @@ export class ArticleRepositoryDB implements ArticleRepository {
     const article = await this.prisma.articles.findUnique({
       where: {
         id: id,
+      },
+      select: {
+        id: true,
+        title: true,
+        introduction: true,
+        content: true,
+        imageUrl: true,
+        tagId: true,
+        createdAt: true
       }
     }); 
 
@@ -53,7 +62,8 @@ export class ArticleRepositoryDB implements ArticleRepository {
       introduction: article.introduction,
       content: article.content,
       imageUrl: article.imageUrl ?? "",
-      tagId: article.tagId
+      tagId: article.tagId,
+      createdAt: article.createdAt
     };
   }
 
@@ -80,7 +90,8 @@ export class ArticleRepositoryDB implements ArticleRepository {
         introduction: true,
         content: true,
         imageUrl: true,
-        tagId: true
+        tagId: true,
+        createdAt: true
       }
     })
 
@@ -93,7 +104,8 @@ export class ArticleRepositoryDB implements ArticleRepository {
       introduction: article.introduction,
       content: article.content,
       imageUrl: article.imageUrl ?? "",
-      tagId: article.tagId
+      tagId: article.tagId,
+      createdAt: article.createdAt
     }));
 
 
@@ -135,7 +147,8 @@ type GetOutput = {
   introduction: string,
   content: string,
   imageUrl: string,
-  tagId: number
+  tagId: number,
+  createdAt: Date
 };
 
 type udpateInput = {
