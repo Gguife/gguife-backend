@@ -89,7 +89,7 @@ docker-compose up -d
 
 #### 5. Run the prisma migrate:
 ```bash
-yarn sequelize db:migrate
+yarn prisma db:migrate
 ```
 
 #### 6. Start server:
