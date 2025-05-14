@@ -1,4 +1,5 @@
 import ArticleRepository from "../article.repository";
+// import { marked } from "marked";
 
 export default class GetAllArticles {
   constructor(readonly articleRepository: ArticleRepository){}
@@ -8,6 +9,7 @@ export default class GetAllArticles {
     const article = await this.articleRepository.getAll(username, offset, limit);
     const formattedArticles = article.articles.map(article => ({
       ...article,
+      // content: marked.parse(article.content) as string,
       createdAt: new Date(article.createdAt).toLocaleDateString("en-US", {
         month: "short",
         day: "2-digit",
