@@ -21,6 +21,14 @@ export class UserRepositoryDB implements UserRepository {
   }
 
   async create(user: User): Promise<User> {
+    const checkUsername = await this.prisma.users.findUnique({
+      where: {
+        username: user.username
+      }
+    })
+
+    if(checkUsername) throw new DomainError("Username allready exist.");
+
     const userSaved = await this.prisma.users.create({
       data: {
         username: user.username,
