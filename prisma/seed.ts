@@ -250,8 +250,8 @@ async function main() {
           },
           {
             id: 3,
-            title: "",
-            introduction: "",
+            title: "Nomeclaturas Git",
+            introduction: "Quais são os principais padrões e nomeclaturas Git e quando usar ?",
             content: `Quando falamos sobre padrões e nomenclaturas no Git, é um ponto importante, embora não seja essencial. No entanto, seguir boas práticas, como manter um padrão consistente e utilizar nomes claros e descritivos nas branches, pode facilitar bastante o desenvolvimento em equipe e a manutenção do projeto. 
 
               Neste artigo, quero compartilhar um guia prático de versionamento e nomenclaturas que adotei e que tem sido útil no meu dia-a-dia!
