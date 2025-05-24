@@ -8,7 +8,7 @@
     "dev": "tsnd --respawn src/index.ts",
     "build": "tsc && npx prisma generate",
     "test": "jest",
-    "start": "npx prisma migrate deploy && yarn seed && node dist/index.js",
+    "start": "npx prisma migrate deploy && yarn seed && node build/index.js",
     "vercel-build": "npx prisma migrate deploy && npx prisma generate"
   },
   "dependencies": {
